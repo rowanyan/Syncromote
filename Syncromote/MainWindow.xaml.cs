@@ -161,6 +161,7 @@ namespace Syncromote
 
     public partial class MainWindow : Window
     {
+        public static Notification n;
         System.Windows.Threading.DispatcherTimer dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
         public bool isHotkeyOn = false;
         private static readonly KeyGesture IncrementGesture = new KeyGesture(Key.Q, ModifierKeys.Control);
@@ -257,7 +258,11 @@ namespace Syncromote
                 if (!isHotkeyOn)
                 {
                     isHotkeyOn = true;
-                    Notification n = new Notification("Inputs are being send");
+                    if (n != null)
+                    {
+                        n.Close();
+                    }
+                    n = new Notification("Inputs are being send");
                     dispatcherTimer.Tick += dispatcherTimer_Tick;
                     dispatcherTimer.Interval = new TimeSpan(0,0, 0, 0, 200);
                     dispatcherTimer.Start();
@@ -266,7 +271,11 @@ namespace Syncromote
                 }
                 else if (isHotkeyOn)
                 {
-                    Notification n = new Notification("Stop sending inputs");
+                    if (n != null)
+                    {
+                        n.Close();
+                    }
+                    n = new Notification("Stop sending inputs");
                     isHotkeyOn = false;
                     dispatcherTimer.Stop();
                 }
