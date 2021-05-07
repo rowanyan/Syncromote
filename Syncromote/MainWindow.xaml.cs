@@ -161,6 +161,7 @@ namespace Syncromote
 
     public partial class MainWindow : Window
     {
+        bool IsMouseMovingByMe = false;
         public static Notification n;
         System.Windows.Threading.DispatcherTimer dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
         public bool isHotkeyOn = false;
@@ -206,10 +207,14 @@ namespace Syncromote
             {
                 try
                 {
-                    string[] result = data.Split(',');
-                    int x1 = Int32.Parse(result[0]);
-                    int y1 = Int32.Parse(result[1]);
-                    MouseOperations.SetCursorPosition(x1, y1);
+                    if (!IsMouseMovingByMe)
+                    {
+                        string[] result = data.Split(',');
+                        int x1 = Int32.Parse(result[0]);
+                        int y1 = Int32.Parse(result[1]);
+                        MouseOperations.SetCursorPosition(x1, y1);
+                    }
+
                 }
                 catch (Exception)
                 {
@@ -291,6 +296,7 @@ namespace Syncromote
             MouseOperations.MousePoint a = MouseOperations.GetCursorPosition();
             if (x != a.X || y != a.Y)
             {
+                IsMouseMovingByMe = false;
                 x = a.X;
                 y = a.Y;
                 if (isHotkeyOn)
@@ -298,6 +304,10 @@ namespace Syncromote
                     send("m$" + x + "," + y);
                 }
 
+            }
+            else
+            {
+                IsMouseMovingByMe = true;
             }
 
         }
