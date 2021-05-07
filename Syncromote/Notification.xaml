@@ -10,21 +10,56 @@
         Background="Transparent"
         WindowStyle="None"
         ResizeMode="CanResizeWithGrip"
-        Left="75" Top="75">
-    <Grid>
+        Left="75" Top="75"
+        >
+    <Grid >
         
         <TextBlock Name="hotkeytextblock"
                    Text="hotkey is on"
                    FontSize="20"
                    Foreground="White"
-                   FontWeight="ExtraLight"
-                   Margin="10,0,-10,0">
+                   FontWeight="DemiBold"
+                   Margin="10,0,-10,0"
+                   >
+            <TextBlock.Effect>
+                <DropShadowEffect Color="Black"
+                                  Direction="270"
+                                  ShadowDepth="0"
+                                  BlurRadius="10"
+                                  />
+            </TextBlock.Effect>
+            
+
+        </TextBlock>
+        <TextBlock Name="hotkeytextblock1"
+                   Text="hotkey is on"
+                   FontSize="20"
+                   Foreground="White"
+                   Margin="10,0,-10,0"
+                   FontWeight="DemiBold">
             <TextBlock.Effect>
                 <DropShadowEffect Color="Black"
                                   Direction="270"
                                   ShadowDepth="0"
                                   BlurRadius="10" />
             </TextBlock.Effect>
+
+
+        </TextBlock>
+        <TextBlock Name="hotkeytextblock2"
+                   Text="hotkey is on"
+                   FontSize="20"
+                   Foreground="White"
+                   Margin="10,0,-10,0"
+                   FontWeight="DemiBold">
+            <TextBlock.Effect>
+                <DropShadowEffect Color="Black"
+                                  Direction="270"
+                                  ShadowDepth="0"
+                                  BlurRadius="10" />
+            </TextBlock.Effect>
+
+
         </TextBlock>
 
 

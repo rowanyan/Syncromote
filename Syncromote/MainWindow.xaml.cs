@@ -10,6 +10,7 @@ using EventHook;
 using System.Timers;
 using NHotkey;
 using NHotkey.Wpf;
+using System.Windows.Media;
 
 namespace Syncromote
 {
@@ -165,6 +166,7 @@ namespace Syncromote
         public static Notification n;
         System.Windows.Threading.DispatcherTimer dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
         public bool isHotkeyOn = false;
+        public bool isHotkeyOnOS = false;
         private static readonly KeyGesture IncrementGesture = new KeyGesture(Key.Q, ModifierKeys.Control);
         public bool isEstablished = false;
         int x = 0, y = 0;
@@ -207,13 +209,11 @@ namespace Syncromote
             {
                 try
                 {
-                    if (!IsMouseMovingByMe)
-                    {
-                        string[] result = data.Split(',');
-                        int x1 = Int32.Parse(result[0]);
-                        int y1 = Int32.Parse(result[1]);
-                        MouseOperations.SetCursorPosition(x1, y1);
-                    }
+                    
+                    string[] result = data.Split(',');
+                    int x1 = Int32.Parse(result[0]);
+                    int y1 = Int32.Parse(result[1]);
+                    MouseOperations.SetCursorPosition(x1, y1);
 
                 }
                 catch (Exception)
@@ -222,6 +222,39 @@ namespace Syncromote
                     
                 }
                 
+            }
+            else if (type =="h")
+            {
+                if (data == "on")
+                {
+                    isHotkeyOnOS = true;
+                    if (isHotkeyOn)
+                    {
+                        if (n != null)
+                        {
+                            n.Close();
+                        }
+                        n = new Notification("Both hotkeys are on", Brushes.Red);
+                    }
+                    else
+                    {
+                        if (n != null)
+                        {
+                            n.Close();
+                        }
+                        n = new Notification("The other side's hotkey is on", Brushes.White);
+                    }
+                }
+                else
+                {
+                    isHotkeyOnOS = false;
+                    if (n != null)
+                    {
+                        n.Close();
+                    }
+                    n = new Notification("The other side's hotkey is off", Brushes.White);
+                }
+
             }
 
             else if (type == "c")
@@ -262,16 +295,26 @@ namespace Syncromote
                 
                 if (!isHotkeyOn)
                 {
+                    send("h$on");
                     isHotkeyOn = true;
                     if (n != null)
                     {
                         n.Close();
                     }
-                    n = new Notification("Inputs are being send");
+                    if (isHotkeyOnOS)
+                    {
+                        n = new Notification("Both hotkeys are on", Brushes.Red);
+                    }
+                    else
+                    {
+                        n = new Notification("Your hotkey is on", Brushes.White);
+                        
+
+                    }
                     dispatcherTimer.Tick += dispatcherTimer_Tick;
-                    dispatcherTimer.Interval = new TimeSpan(0,0, 0, 0, 200);
+                    dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 200);
                     dispatcherTimer.Start();
-                    
+
 
                 }
                 else if (isHotkeyOn)
@@ -280,7 +323,8 @@ namespace Syncromote
                     {
                         n.Close();
                     }
-                    n = new Notification("Stop sending inputs");
+                    send("h$off");
+                    n = new Notification("Your hotkey is off", Brushes.White);
                     isHotkeyOn = false;
                     dispatcherTimer.Stop();
                 }

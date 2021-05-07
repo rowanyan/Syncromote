@@ -25,10 +25,13 @@ namespace Syncromote
         {
             InitializeComponent();
         }
-        public Notification(string s)
+        public Notification(string s, Brush color)
         {
             InitializeComponent();
             hotkeytextblock.Text = s;
+            hotkeytextblock1.Text = s;
+            hotkeytextblock2.Text = s;
+            changeColor(color);
             this.Show();
             dispatcherTimer.Tick += dispatcherTimer_Tick;
             dispatcherTimer.Interval = new TimeSpan(0, 0, 4);
@@ -41,5 +44,12 @@ namespace Syncromote
             this.Close();
 
         }
+        public void changeColor(Brush color)
+        {
+            hotkeytextblock.Foreground = color;
+            hotkeytextblock1.Foreground = color;
+            hotkeytextblock2.Foreground = color;
+        }
     }
+    
 }
