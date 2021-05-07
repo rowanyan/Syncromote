@@ -11,6 +11,7 @@
         WindowStyle="None"
         ResizeMode="CanResizeWithGrip"
         Left="75" Top="75"
+        Topmost="True"
         >
     <Grid >
         

@@ -223,26 +223,37 @@ namespace Syncromote
                 }
                 
             }
-            else if (type =="h")
+            if (type =="h")
             {
                 if (data == "on")
                 {
                     isHotkeyOnOS = true;
                     if (isHotkeyOn)
                     {
+
                         if (n != null)
                         {
-                            n.Close();
+                            try { n.Close(); n = null; }
+                            catch (Exception) { }
                         }
-                        n = new Notification("Both hotkeys are on", Brushes.Red);
+                        Application.Current.Dispatcher.Invoke((Action)delegate
+                        {
+                            n = new Notification("Both hotkeys are on", Brushes.Red);
+                        });
                     }
                     else
                     {
                         if (n != null)
                         {
-                            n.Close();
+                            try { n.Close(); n = null; }
+                            catch (Exception) { }
                         }
-                        n = new Notification("The other side's hotkey is on", Brushes.White);
+                        Application.Current.Dispatcher.Invoke((Action)delegate
+                        {
+                            n = new Notification("The other side's hotkey is on", Brushes.White);
+                        });
+                        
+
                     }
                 }
                 else
@@ -250,14 +261,19 @@ namespace Syncromote
                     isHotkeyOnOS = false;
                     if (n != null)
                     {
-                        n.Close();
+                        try { n.Close(); n = null; }
+                        catch (Exception) { }
                     }
-                    n = new Notification("The other side's hotkey is off", Brushes.White);
+                    Application.Current.Dispatcher.Invoke((Action)delegate
+                    {
+                        n = new Notification("The other side's hotkey is off", Brushes.White);
+                    });
+
                 }
 
             }
 
-            else if (type == "c")
+            if (type == "c")
             {
                 string[] result = data.Split(',');
                 int x1 = Int32.Parse(result[0]);
@@ -267,7 +283,7 @@ namespace Syncromote
                 MouseOperations.MouseEvent(MouseOperations.MouseEventFlags.LeftUp);
             }
 
-            else if (type == "t")
+            if (type == "t")
             {
                 if (srvorclt == true)
                 {
@@ -299,7 +315,8 @@ namespace Syncromote
                     isHotkeyOn = true;
                     if (n != null)
                     {
-                        n.Close();
+                        try { n.Close(); n = null; }
+                        catch (Exception) { }
                     }
                     if (isHotkeyOnOS)
                     {
@@ -308,7 +325,6 @@ namespace Syncromote
                     else
                     {
                         n = new Notification("Your hotkey is on", Brushes.White);
-                        
 
                     }
                     dispatcherTimer.Tick += dispatcherTimer_Tick;
@@ -321,7 +337,8 @@ namespace Syncromote
                 {
                     if (n != null)
                     {
-                        n.Close();
+                        try { n.Close(); n = null; }
+                        catch (Exception) { }
                     }
                     send("h$off");
                     n = new Notification("Your hotkey is off", Brushes.White);
@@ -415,7 +432,7 @@ namespace Syncromote
 
         private void OnApplicationExit(object sender, EventArgs e)
         {
-            keyboardWatcher.Stop();
+            //keyboardWatcher.Stop();
             mouseWatcher.Stop();
             //clipboardWatcher.Stop();
             //applicationWatcher.Stop();
