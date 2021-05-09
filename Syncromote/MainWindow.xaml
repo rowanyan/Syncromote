@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Syncromote"
         mc:Ignorable="d"
-        Title="Project Valkyrie"
+        Title="Syncromote"
         Height="400"
         Width="600"
         xmlns:ui="http://schemas.modernwpf.com/2019"

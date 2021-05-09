@@ -72,9 +72,8 @@ namespace Syncromote
 
         public static void DataReceived(object sender, DataReceivedEventArgs e)
         {
-            String type = Encoding.UTF8.GetString(e.Data).Substring(0, 1);
-            String data = Encoding.UTF8.GetString(e.Data).Substring(2);
-            reff.receive(type, data);
+            
+            reff.receive(Encoding.UTF8.GetString(e.Data));
             
         }
 
@@ -147,7 +146,7 @@ namespace Syncromote
                 }
                 else
                 {
-                    reff.receive(type, data);
+                    reff.receive(Encoding.UTF8.GetString(e.Data));
                     
                 }
             });
@@ -201,99 +200,108 @@ namespace Syncromote
             }
             
         }
-        public void receive(string type, string data)
-        {
-            Console.WriteLine("GET:   " + type+"$"+data);
+        public void receive(string message)
 
-            if (type == "m")
+        {
+            string[] request = message.Split('|');
+            for (int i = 1; i < request.Length; i++)
             {
-                try
+
+
+                String type = request[i].Substring(0, 1);
+                String data = request[i].Substring(2);
+                Console.WriteLine("GET:   " + type + "$" + data);
+
+                if (type == "m")
                 {
-                    
+                    try
+                    {
+
+                        string[] result = data.Split(',');
+                        int x1 = Int32.Parse(result[0]);
+                        int y1 = Int32.Parse(result[1]);
+                        MouseOperations.SetCursorPosition(x1, y1);
+
+                    }
+                    catch (Exception)
+                    {
+
+
+                    }
+
+                }
+                if (type == "h")
+                {
+                    if (data == "on")
+                    {
+                        isHotkeyOnOS = true;
+                        if (isHotkeyOn)
+                        {
+
+                            if (n != null)
+                            {
+                                try { n.Close(); n = null; }
+                                catch (Exception) { }
+                            }
+                            Application.Current.Dispatcher.Invoke((Action)delegate
+                            {
+                                n = new Notification("Both hotkeys are on", Brushes.Red);
+                            });
+                        }
+                        else
+                        {
+                            if (n != null)
+                            {
+                                try { n.Close(); n = null; }
+                                catch (Exception) { }
+                            }
+                            Application.Current.Dispatcher.Invoke((Action)delegate
+                            {
+                                n = new Notification("The other side's hotkey is on", Brushes.White);
+                            });
+
+
+                        }
+                    }
+                    else
+                    {
+                        isHotkeyOnOS = false;
+                        if (n != null)
+                        {
+                            try { n.Close(); n = null; }
+                            catch (Exception) { }
+                        }
+                        Application.Current.Dispatcher.Invoke((Action)delegate
+                        {
+                            n = new Notification("The other side's hotkey is off", Brushes.White);
+                        });
+
+                    }
+
+                }
+
+                if (type == "c")
+                {
                     string[] result = data.Split(',');
                     int x1 = Int32.Parse(result[0]);
                     int y1 = Int32.Parse(result[1]);
                     MouseOperations.SetCursorPosition(x1, y1);
-
+                    MouseOperations.MouseEvent(MouseOperations.MouseEventFlags.LeftDown);
+                    MouseOperations.MouseEvent(MouseOperations.MouseEventFlags.LeftUp);
                 }
-                catch (Exception)
-                {
 
-                    
-                }
-                
-            }
-            if (type =="h")
-            {
-                if (data == "on")
+                if (type == "t")
                 {
-                    isHotkeyOnOS = true;
-                    if (isHotkeyOn)
+                    if (srvorclt == true)
                     {
-
-                        if (n != null)
-                        {
-                            try { n.Close(); n = null; }
-                            catch (Exception) { }
-                        }
-                        Application.Current.Dispatcher.Invoke((Action)delegate
-                        {
-                            n = new Notification("Both hotkeys are on", Brushes.Red);
-                        });
+                        messagetextBlock.Text += "\nServer: " + data;
                     }
                     else
                     {
-                        if (n != null)
-                        {
-                            try { n.Close(); n = null; }
-                            catch (Exception) { }
-                        }
-                        Application.Current.Dispatcher.Invoke((Action)delegate
-                        {
-                            n = new Notification("The other side's hotkey is on", Brushes.White);
-                        });
-                        
-
+                        messagetextBlock.Text += "\nClient: " + data;
                     }
-                }
-                else
-                {
-                    isHotkeyOnOS = false;
-                    if (n != null)
-                    {
-                        try { n.Close(); n = null; }
-                        catch (Exception) { }
-                    }
-                    Application.Current.Dispatcher.Invoke((Action)delegate
-                    {
-                        n = new Notification("The other side's hotkey is off", Brushes.White);
-                    });
 
                 }
-
-            }
-
-            if (type == "c")
-            {
-                string[] result = data.Split(',');
-                int x1 = Int32.Parse(result[0]);
-                int y1 = Int32.Parse(result[1]);
-                MouseOperations.SetCursorPosition(x1, y1);
-                MouseOperations.MouseEvent(MouseOperations.MouseEventFlags.LeftDown);
-                MouseOperations.MouseEvent(MouseOperations.MouseEventFlags.LeftUp);
-            }
-
-            if (type == "t")
-            {
-                if (srvorclt == true)
-                {
-                    messagetextBlock.Text += "\nServer: " + data;
-                }
-                else
-                {
-                    messagetextBlock.Text += "\nClient: " + data;
-                }
-
             }
         }
 
@@ -362,7 +370,7 @@ namespace Syncromote
                 y = a.Y;
                 if (isHotkeyOn)
                 {
-                    send("m$" + x + "," + y);
+                    send("|"+"m$" + x + "," + y);
                 }
 
             }
@@ -395,7 +403,7 @@ namespace Syncromote
                 {
                     if (isHotkeyOn)
                     {
-                        send("c$" + e.Point.x + "," + e.Point.y);
+                        send("|"+"c$" + e.Point.x + "," + e.Point.y);
                     }
                  
                 }

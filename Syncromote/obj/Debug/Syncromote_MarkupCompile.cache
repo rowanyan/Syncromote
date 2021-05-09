@@ -4,17 +4,17 @@
 exe
 C#
 .cs
-C:\Users\Arash\Source\Repos\rowanyan\Syncromote\Syncromote\obj\Debug\
+C:\Users\Arash\source\repos\rowanyan\Syncromote\Syncromote\obj\Debug\
 Syncromote
 none
 false
 DEBUG;TRACE
-C:\Users\Arash\Source\Repos\rowanyan\Syncromote\Syncromote\App.xaml
+C:\Users\Arash\source\repos\rowanyan\Syncromote\Syncromote\App.xaml
 4-3704881
 2-1365799845
 10-1575786567
-231226735504
+23-893951939
 AboutUs.xaml;connectPremission.xaml;MainWindow.xaml;Notification.xaml;
 
-False
+True
 
