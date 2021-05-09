@@ -68,6 +68,7 @@ namespace Syncromote
         public static void ClientDisconnected(object sender, ClientDisconnectedEventArgs e)
         {
             Console.WriteLine("[" + e.IpPort + "] client disconnected: " + e.Reason.ToString());
+            reff.isEstablished = false;
         }
 
         public static void DataReceived(object sender, DataReceivedEventArgs e)
@@ -99,7 +100,7 @@ namespace Syncromote
             client.Connect();
 
             Application.Current.Dispatcher.Invoke((Action) delegate {
-                 window1 = new connectPremission();
+                window1 = new connectPremission();
                 window1.Show();
             });
 
@@ -319,7 +320,7 @@ namespace Syncromote
                 
                 if (!isHotkeyOn)
                 {
-                    send("h$on");
+                    send("|h$on");
                     isHotkeyOn = true;
                     if (n != null)
                     {
@@ -336,7 +337,7 @@ namespace Syncromote
 
                     }
                     dispatcherTimer.Tick += dispatcherTimer_Tick;
-                    dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 200);
+                    dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 10);
                     dispatcherTimer.Start();
 
 
@@ -348,7 +349,7 @@ namespace Syncromote
                         try { n.Close(); n = null; }
                         catch (Exception) { }
                     }
-                    send("h$off");
+                    send("|h$off");
                     n = new Notification("Your hotkey is off", Brushes.White);
                     isHotkeyOn = false;
                     dispatcherTimer.Stop();
@@ -401,9 +402,11 @@ namespace Syncromote
             {
                 if (e.Message.ToString() == "WM_LBUTTONUP")
                 {
-                    if (isHotkeyOn)
+                    Console.WriteLine("Clicked!!!!!");
+                    if (isHotkeyOn && isEstablished)
                     {
-                        send("|"+"c$" + e.Point.x + "," + e.Point.y);
+                        try {send("|c$" + e.Point.x + "," + e.Point.y);}
+                        catch (Exception){}
                     }
                  
                 }
@@ -489,6 +492,7 @@ namespace Syncromote
                     tcp_client.client.Disconnect();
                     connectbutton.Content = "Connect";
                     startButton.IsEnabled = true;
+                    isEstablished = false;
 
                 }
                 else if (srvorclt == false)
@@ -497,6 +501,7 @@ namespace Syncromote
                     tcp_server.server.Stop();
                     connectbutton.Content = "Connect";
                     startButton.IsEnabled = true;
+                    isEstablished = false;
 
                 }
                 
