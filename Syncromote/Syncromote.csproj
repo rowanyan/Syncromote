@@ -54,6 +54,7 @@
     <Reference Include="ModernWpf.Controls, Version=0.9.4.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\ModernWpfUI.0.9.4\lib\net45\ModernWpf.Controls.dll</HintPath>
     </Reference>
+    <Reference Include="netstandard" />
     <Reference Include="NHotkey, Version=2.0.0.0, Culture=neutral, PublicKeyToken=a76ffb086700b11c, processorArchitecture=MSIL">
       <HintPath>packages\NHotkey.2.1.0\lib\net45\NHotkey.dll</HintPath>
     </Reference>
@@ -91,6 +92,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Keyboard.cs" />
     <Compile Include="Notification.xaml.cs">
       <DependentUpon>Notification.xaml</DependentUpon>
     </Compile>
