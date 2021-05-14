@@ -177,7 +177,6 @@ C:\Users\KAVOSH\source\repos\rowanyan\Syncromote\Syncromote\bin\Debug\System.Sec
 C:\Users\KAVOSH\source\repos\rowanyan\Syncromote\Syncromote\bin\Debug\System.Security.Principal.Windows.xml
 C:\Users\KAVOSH\source\repos\rowanyan\Syncromote\Syncromote\obj\Debug\Notification.g.cs
 C:\Users\KAVOSH\source\repos\rowanyan\Syncromote\Syncromote\obj\Debug\Notification.baml
-C:\Users\KAVOSH\source\repos\rowanyan\Syncromote\Syncromote\obj\Debug\GeneratedInternalTypeHelper.g.cs
 C:\Users\Arash\Source\Repos\rowanyan\Syncromote\Syncromote\bin\Debug\sounds\tuturu.wav
 C:\Users\Arash\Source\Repos\rowanyan\Syncromote\Syncromote\bin\Debug\sounds\tuturu.mp3
 C:\Users\Arash\Source\Repos\rowanyan\Syncromote\Syncromote\bin\Debug\Syncromote.exe.config

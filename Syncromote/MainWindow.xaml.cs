@@ -168,7 +168,7 @@ namespace Syncromote
         System.Windows.Threading.DispatcherTimer dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
         public bool isHotkeyOn = false;
         public bool isHotkeyOnOS = false;
-        private static readonly KeyGesture IncrementGesture = new KeyGesture(Key.Q, ModifierKeys.Control);
+        private static readonly KeyGesture IncrementGesture = new KeyGesture(Key.Q, ModifierKeys.Alt);
         public bool isEstablished = false;
         int x = 0, y = 0;
         static bool srvorclt = true;
@@ -282,16 +282,41 @@ namespace Syncromote
 
                 }
 
-                if (type == "c")
+                if (type == "n")
                 {
                     string[] result = data.Split(',');
                     int x1 = Int32.Parse(result[0]);
                     int y1 = Int32.Parse(result[1]);
                     MouseOperations.SetCursorPosition(x1, y1);
-                    //MouseOperations.MouseEvent(MouseOperations.MouseEventFlags.LeftDown);
-                    //MouseOperations.MouseEvent(MouseOperations.MouseEventFlags.LeftUp);
-                    //PerformAClick.CLICK();
-                    Keyboard.Send(Keyboard.ScanCodeShort.RETURN);
+                    MouseOperations.MouseEvent(MouseOperations.MouseEventFlags.LeftUp);
+
+                }
+                if (type == "e")
+                {
+                    string[] result = data.Split(',');
+                    int x1 = Int32.Parse(result[0]);
+                    int y1 = Int32.Parse(result[1]);
+                    MouseOperations.SetCursorPosition(x1, y1);
+                    MouseOperations.MouseEvent(MouseOperations.MouseEventFlags.LeftDown);
+
+                }
+                if (type == "d")
+                {
+                    string[] result = data.Split(',');
+                    int x1 = Int32.Parse(result[0]);
+                    int y1 = Int32.Parse(result[1]);
+                    MouseOperations.SetCursorPosition(x1, y1);
+                    MouseOperations.MouseEvent(MouseOperations.MouseEventFlags.RightUp);
+
+                }
+                if (type == "a")
+                {
+                    string[] result = data.Split(',');
+                    int x1 = Int32.Parse(result[0]);
+                    int y1 = Int32.Parse(result[1]);
+                    MouseOperations.SetCursorPosition(x1, y1);
+                    MouseOperations.MouseEvent(MouseOperations.MouseEventFlags.RightDown);
+
                 }
 
                 if (type == "t")
@@ -410,15 +435,43 @@ namespace Syncromote
             {
                 if (e.Message.ToString() == "WM_LBUTTONUP")
                 {
-                    Console.WriteLine("Clicked!!!!!");
+                    Console.WriteLine("WM_LBUTTONUP");
                     if (isHotkeyOn && isEstablished)
                     {
-                        try {send("|c$" + e.Point.x + "," + e.Point.y);}
+                        try {send("|n$" + e.Point.x + "," + e.Point.y);}
                         catch (Exception){}
                     }
                  
                 }
-                
+
+                else if (e.Message.ToString() == "WM_LBUTTONDOWN")
+                {
+                    Console.WriteLine("WM_LBUTTONDOWN");
+                    if (isHotkeyOn && isEstablished)
+                    {
+                        try { send("|e$" + e.Point.x + "," + e.Point.y); }
+                        catch (Exception) { }
+                    }
+                }
+                else if (e.Message.ToString() == "WM_RBUTTONUP")
+                {
+                    Console.WriteLine("WM_RBUTTONUP");
+                    if (isHotkeyOn && isEstablished)
+                    {
+                        try { send("|d$" + e.Point.x + "," + e.Point.y); }
+                        catch (Exception) { }
+                    }
+                }
+                else if (e.Message.ToString() == "WM_RBUTTONDOWN")
+                {
+                    Console.WriteLine("WM_RBUTTONDOWN");
+                    if (isHotkeyOn && isEstablished)
+                    {
+                        try { send("|a$" + e.Point.x + "," + e.Point.y); }
+                        catch (Exception) { }
+                    }
+                }
+
             };
 
             //clipboardWatcher = eventHookFactory.GetClipboardWatcher();
