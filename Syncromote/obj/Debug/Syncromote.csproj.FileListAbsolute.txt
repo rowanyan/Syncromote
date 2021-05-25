@@ -356,3 +356,5 @@ C:\Users\Arash\Source\Repos\rowanyan\Syncromote\Syncromote\obj\Debug\Syncromote.
 c:\users\arash\source\repos\rowanyan\syncromote\syncromote\obj\Debug\Syncromote.csproj.CopyComplete
 C:\Users\Arash\Source\Repos\rowanyan\Syncromote\Syncromote\obj\Debug\Syncromote.exe
 C:\Users\Arash\Source\Repos\rowanyan\Syncromote\Syncromote\obj\Debug\Syncromote.pdb
+C:\Users\KAVOSH\source\repos\rowanyan\Syncromote\Syncromote\obj\Debug\transWindow.g.cs
+C:\Users\KAVOSH\source\repos\rowanyan\Syncromote\Syncromote\obj\Debug\transWindow.baml

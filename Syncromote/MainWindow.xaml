@@ -106,12 +106,17 @@
                                 Width="145">
 
                         </Button>
+                        
 
                         <CheckBox Name="chboxskype"
                                   Content="Skype remote mode"
                                   Margin="44,150,0,0" 
                                   IsChecked="False"
                                   />
+                        <CheckBox Name="chboxGoogleMeet"
+                                  Content="Google meet remote mode"
+                                  Margin="44,200,0,0"
+                                  IsChecked="False" />
 
                         <TextBlock x:Name="ipTextBlock"
                                    Foreground="White"

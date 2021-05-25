@@ -8,9 +8,18 @@
         Title="transWindow" Height="768" Width="1366"
         Background="Transparent"
         WindowStyle="None"
-        WindowStartupLocation="CenterScreen">
+        WindowStartupLocation="CenterScreen"
+        Topmost="True"
+        ResizeMode="NoResize"
+        AllowsTransparency="True"
+        WindowState="Maximized">
+    
     <Border BorderThickness="2"
             BorderBrush="Violet">
+        <Grid Background="Black"
+              Opacity="0.01">
+            
+        </Grid>
         
     </Border>
 </Window>

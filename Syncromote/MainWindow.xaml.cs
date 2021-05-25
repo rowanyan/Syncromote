@@ -461,8 +461,8 @@ namespace Syncromote
             
             Application.Current.Exit += OnApplicationExit;
 
-            
 
+            
 
             mouseWatcher = eventHookFactory.GetMouseWatcher();
             mouseWatcher.Start();
@@ -662,18 +662,40 @@ namespace Syncromote
 
         private int[] PositionConvert(int x, int y)
         {
+            int topleftx=0;
+            int toplefty=0;
+            int buttomdownx=1366;
+            int buttomdowny=768;
+
             int[] positions = new int[2];
 
-            if ((bool)chboxskype.IsChecked)
+
+
+            this.Dispatcher.Invoke(() =>
+        {
+            if (chboxskype.IsChecked == true)
             {
-                positions[0] = ((x - 132) * 1366) / 1100;
-                positions[1] = ((x - 80) * 1366) / 1100;
+                chboxGoogleMeet.IsChecked = false;
+                topleftx = 132;
+                toplefty = 80;
+                buttomdownx = 1232;
+                buttomdowny = 698;
             }
-            else
+            else if (chboxGoogleMeet.IsChecked == true)
             {
-                positions[0] = x;
-                positions[0] = y;
+                chboxskype.IsChecked = false;
+                topleftx = 30;
+                toplefty = 12;
+                buttomdownx = 1336;
+                buttomdowny = 746;
             }
+        });
+
+           
+
+            positions[0] = ((x - topleftx) * 1366) / (buttomdownx - topleftx);
+            positions[1] = ((y - toplefty) * 1366) / (buttomdownx - topleftx);
+        
             return positions;
         }
 
