@@ -48,7 +48,7 @@ namespace Syncromote {
     public partial class MainWindow : System.Windows.Window, System.Windows.Markup.IComponentConnector {
         
         
-        #line 29 "..\..\MainWindow.xaml"
+        #line 34 "..\..\MainWindow.xaml"
         [System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         internal ModernWpf.Controls.NavigationView NavView;
         
@@ -56,7 +56,7 @@ namespace Syncromote {
         #line hidden
         
         
-        #line 42 "..\..\MainWindow.xaml"
+        #line 47 "..\..\MainWindow.xaml"
         [System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         internal ModernWpf.Controls.NavigationViewItem HomeBox;
         
@@ -64,7 +64,7 @@ namespace Syncromote {
         #line hidden
         
         
-        #line 48 "..\..\MainWindow.xaml"
+        #line 52 "..\..\MainWindow.xaml"
         [System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         internal ModernWpf.Controls.NavigationViewItem ChatBox;
         
@@ -72,7 +72,7 @@ namespace Syncromote {
         #line hidden
         
         
-        #line 58 "..\..\MainWindow.xaml"
+        #line 62 "..\..\MainWindow.xaml"
         [System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         internal System.Windows.Controls.Grid Home;
         
@@ -80,7 +80,7 @@ namespace Syncromote {
         #line hidden
         
         
-        #line 70 "..\..\MainWindow.xaml"
+        #line 75 "..\..\MainWindow.xaml"
         [System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         internal System.Windows.Controls.TextBlock messageTxt;
         
@@ -88,7 +88,7 @@ namespace Syncromote {
         #line hidden
         
         
-        #line 80 "..\..\MainWindow.xaml"
+        #line 85 "..\..\MainWindow.xaml"
         [System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         internal System.Windows.Controls.Button connectbutton;
         
@@ -96,7 +96,7 @@ namespace Syncromote {
         #line hidden
         
         
-        #line 93 "..\..\MainWindow.xaml"
+        #line 98 "..\..\MainWindow.xaml"
         [System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         internal System.Windows.Controls.Button startButton;
         
@@ -104,7 +104,15 @@ namespace Syncromote {
         #line hidden
         
         
-        #line 105 "..\..\MainWindow.xaml"
+        #line 110 "..\..\MainWindow.xaml"
+        [System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
+        internal System.Windows.Controls.CheckBox chboxskype;
+        
+        #line default
+        #line hidden
+        
+        
+        #line 116 "..\..\MainWindow.xaml"
         [System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         internal System.Windows.Controls.TextBlock ipTextBlock;
         
@@ -112,7 +120,7 @@ namespace Syncromote {
         #line hidden
         
         
-        #line 117 "..\..\MainWindow.xaml"
+        #line 128 "..\..\MainWindow.xaml"
         [System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         internal System.Windows.Controls.TextBox ipTextBox;
         
@@ -120,7 +128,7 @@ namespace Syncromote {
         #line hidden
         
         
-        #line 143 "..\..\MainWindow.xaml"
+        #line 154 "..\..\MainWindow.xaml"
         [System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         internal System.Windows.Controls.TextBox messagetextBox;
         
@@ -128,7 +136,7 @@ namespace Syncromote {
         #line hidden
         
         
-        #line 199 "..\..\MainWindow.xaml"
+        #line 210 "..\..\MainWindow.xaml"
         [System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         internal System.Windows.Controls.TextBlock messagetextBlock;
         
@@ -168,7 +176,7 @@ namespace Syncromote {
             case 1:
             this.NavView = ((ModernWpf.Controls.NavigationView)(target));
             
-            #line 36 "..\..\MainWindow.xaml"
+            #line 41 "..\..\MainWindow.xaml"
             this.NavView.ItemInvoked += new ModernWpf.TypedEventHandler<ModernWpf.Controls.NavigationView, ModernWpf.Controls.NavigationViewItemInvokedEventArgs>(this.NavView_ItemInvoked);
             
             #line default
@@ -189,7 +197,7 @@ namespace Syncromote {
             case 6:
             this.connectbutton = ((System.Windows.Controls.Button)(target));
             
-            #line 81 "..\..\MainWindow.xaml"
+            #line 86 "..\..\MainWindow.xaml"
             this.connectbutton.Click += new System.Windows.RoutedEventHandler(this.connectbutton_Click);
             
             #line default
@@ -198,50 +206,53 @@ namespace Syncromote {
             case 7:
             this.startButton = ((System.Windows.Controls.Button)(target));
             
-            #line 98 "..\..\MainWindow.xaml"
+            #line 103 "..\..\MainWindow.xaml"
             this.startButton.Click += new System.Windows.RoutedEventHandler(this.Button_Click_2);
             
             #line default
             #line hidden
             return;
             case 8:
-            this.ipTextBlock = ((System.Windows.Controls.TextBlock)(target));
+            this.chboxskype = ((System.Windows.Controls.CheckBox)(target));
             return;
             case 9:
+            this.ipTextBlock = ((System.Windows.Controls.TextBlock)(target));
+            return;
+            case 10:
             this.ipTextBox = ((System.Windows.Controls.TextBox)(target));
             
-            #line 125 "..\..\MainWindow.xaml"
+            #line 136 "..\..\MainWindow.xaml"
             this.ipTextBox.TextChanged += new System.Windows.Controls.TextChangedEventHandler(this.TextBox_TextChanged);
             
             #line default
             #line hidden
             return;
-            case 10:
+            case 11:
             
-            #line 135 "..\..\MainWindow.xaml"
+            #line 146 "..\..\MainWindow.xaml"
             ((System.Windows.Controls.Button)(target)).Click += new System.Windows.RoutedEventHandler(this.Button_Click_1);
             
             #line default
             #line hidden
             return;
-            case 11:
+            case 12:
             this.messagetextBox = ((System.Windows.Controls.TextBox)(target));
             
-            #line 151 "..\..\MainWindow.xaml"
+            #line 162 "..\..\MainWindow.xaml"
             this.messagetextBox.TextChanged += new System.Windows.Controls.TextChangedEventHandler(this.TextBox_TextChanged);
             
             #line default
             #line hidden
             return;
-            case 12:
+            case 13:
             
-            #line 161 "..\..\MainWindow.xaml"
+            #line 172 "..\..\MainWindow.xaml"
             ((System.Windows.Controls.Button)(target)).Click += new System.Windows.RoutedEventHandler(this.sendButton_Click);
             
             #line default
             #line hidden
             return;
-            case 13:
+            case 14:
             this.messagetextBlock = ((System.Windows.Controls.TextBlock)(target));
             return;
             }

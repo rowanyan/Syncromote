@@ -12,6 +12,7 @@ using NHotkey;
 using NHotkey.Wpf;
 using System.Windows.Media;
 using System.Threading.Tasks;
+using System.Reflection;
 
 namespace Syncromote
 {
@@ -166,6 +167,7 @@ namespace Syncromote
 
     public partial class MainWindow : Window
     {
+        transWindow transWindow=new transWindow();
         public int[] selfResolution = new int[2];
         public int[] otherSideResolution = new int[2];
         bool IsMouseMovingByMe = false;
@@ -225,8 +227,9 @@ namespace Syncromote
                     {
 
                         string[] result = data.Split(',');
-                        int x1 = (Int32.Parse(result[0]) * otherSideResolution[0])/selfResolution[0];
-                        int y1 = (Int32.Parse(result[1]) * otherSideResolution[0]) / selfResolution[0];
+                        int x1 = (Int32.Parse(result[0]) * selfResolution[0] / otherSideResolution[0]);
+                        int y1 = (Int32.Parse(result[1]) * selfResolution[0] / otherSideResolution[0]);
+                        Console.WriteLine(x1 + "   " + y1);
                         MouseOperations.SetCursorPosition(x1, y1);
 
                     }
@@ -290,8 +293,8 @@ namespace Syncromote
                 if (type == "n")
                 {
                     string[] result = data.Split(',');
-                    int x1 = (Int32.Parse(result[0]) * otherSideResolution[0]) / selfResolution[0];
-                    int y1 = (Int32.Parse(result[1]) * otherSideResolution[0]) / selfResolution[0];
+                    int x1 = (Int32.Parse(result[0]) * selfResolution[0] / otherSideResolution[0]);
+                    int y1 = (Int32.Parse(result[1]) * selfResolution[0] / otherSideResolution[0]);
                     MouseOperations.SetCursorPosition(x1, y1);
                     MouseOperations.MouseEvent(MouseOperations.MouseEventFlags.LeftUp);
 
@@ -299,8 +302,8 @@ namespace Syncromote
                 if (type == "e")
                 {
                     string[] result = data.Split(',');
-                    int x1 = (Int32.Parse(result[0]) * otherSideResolution[0]) / selfResolution[0];
-                    int y1 = (Int32.Parse(result[1]) * otherSideResolution[0]) / selfResolution[0];
+                    int x1 = (Int32.Parse(result[0]) * selfResolution[0] / otherSideResolution[0]);
+                    int y1 = (Int32.Parse(result[1]) * selfResolution[0] / otherSideResolution[0]);
                     MouseOperations.SetCursorPosition(x1, y1);
                     MouseOperations.MouseEvent(MouseOperations.MouseEventFlags.LeftDown);
 
@@ -308,8 +311,8 @@ namespace Syncromote
                 if (type == "d")
                 {
                     string[] result = data.Split(',');
-                    int x1 = (Int32.Parse(result[0]) * otherSideResolution[0]) / selfResolution[0];
-                    int y1 = (Int32.Parse(result[1]) * otherSideResolution[0]) / selfResolution[0];
+                    int x1 = (Int32.Parse(result[0]) * selfResolution[0] / otherSideResolution[0]);
+                    int y1 = (Int32.Parse(result[1]) * selfResolution[0] / otherSideResolution[0]);
                     MouseOperations.SetCursorPosition(x1, y1);
                     MouseOperations.MouseEvent(MouseOperations.MouseEventFlags.RightUp);
 
@@ -317,8 +320,8 @@ namespace Syncromote
                 if (type == "a")
                 {
                     string[] result = data.Split(',');
-                    int x1 = (Int32.Parse(result[0]) * otherSideResolution[0]) / selfResolution[0];
-                    int y1 = (Int32.Parse(result[1]) * otherSideResolution[0]) / selfResolution[0];
+                    int x1 = (Int32.Parse(result[0]) * selfResolution[0] / otherSideResolution[0]);
+                    int y1 = (Int32.Parse(result[1]) * selfResolution[0] / otherSideResolution[0]);
                     MouseOperations.SetCursorPosition(x1, y1);
                     MouseOperations.MouseEvent(MouseOperations.MouseEventFlags.RightDown);
 
@@ -367,6 +370,10 @@ namespace Syncromote
                 
                 if (!isHotkeyOn)
                 {
+                    if ((bool)chboxskype.IsChecked)
+                    {
+                        transWindow.Show();
+                    }
                     send("|h$on");
                     isHotkeyOn = true;
                     if (n != null)
@@ -391,6 +398,7 @@ namespace Syncromote
                 }
                 else if (isHotkeyOn)
                 {
+                    transWindow.Hide();
                     if (n != null)
                     {
                         try { n.Close(); n = null; }
@@ -413,12 +421,13 @@ namespace Syncromote
             MouseOperations.MousePoint a = MouseOperations.GetCursorPosition();
             if (x != a.X || y != a.Y)
             {
+                int[] position = PositionConvert(x, y);
                 IsMouseMovingByMe = false;
                 x = a.X;
                 y = a.Y;
                 if (isHotkeyOn)
                 {
-                    send("|"+"m$" + x + "," + y);
+                    send("|"+"m$" + position[0] + "," + position[1]);
                 }
 
             }
@@ -431,9 +440,17 @@ namespace Syncromote
 
         public MainWindow()
         {
-            this.selfResolution[0] = (int)System.Windows.SystemParameters.PrimaryScreenWidth; 
-            this.selfResolution[1]= (int)System.Windows.SystemParameters.PrimaryScreenHeight;
-            Console.WriteLine(this.selfResolution[0] + "     "+ this.selfResolution[1]);
+            var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
+            var dpiYProperty = typeof(SystemParameters).GetProperty("Dpi", BindingFlags.NonPublic | BindingFlags.Static);
+
+            var dpiX = (int)dpiXProperty.GetValue(null, null) / 0.96;
+            var dpiY = (int)dpiYProperty.GetValue(null, null) / 0.96;
+            HotkeyManager.HotkeyAlreadyRegistered += HotkeyManager_HotkeyAlreadyRegistered;
+
+            this.selfResolution[0] = (int)(System.Windows.SystemParameters.PrimaryScreenWidth * (double)(dpiX / 100));
+            this.selfResolution[1] = (int)(System.Windows.SystemParameters.PrimaryScreenHeight * (double)(dpiX / 100));
+
+            Console.WriteLine(this.selfResolution[0] + "     " + this.selfResolution[1]);
 
             HotkeyManager.HotkeyAlreadyRegistered += HotkeyManager_HotkeyAlreadyRegistered;
 
@@ -451,12 +468,13 @@ namespace Syncromote
             mouseWatcher.Start();
             mouseWatcher.OnMouseInput += (s, e) =>
             {
+                int[] positions = PositionConvert(e.Point.x, e.Point.y);
                 if (e.Message.ToString() == "WM_LBUTTONUP")
                 {
                     Console.WriteLine("WM_LBUTTONUP");
                     if (isHotkeyOn && isEstablished)
                     {
-                        try {send("|n$" + e.Point.x + "," + e.Point.y);}
+                        try {send("|n$" + positions[0]+ "," + positions[1]);}
                         catch (Exception){}
                     }
                  
@@ -467,7 +485,7 @@ namespace Syncromote
                     Console.WriteLine("WM_LBUTTONDOWN");
                     if (isHotkeyOn && isEstablished)
                     {
-                        try { send("|e$" + e.Point.x + "," + e.Point.y); }
+                        try { send("|e$" + positions[0] + "," + positions[1]); }
                         catch (Exception) { }
                     }
                 }
@@ -476,7 +494,7 @@ namespace Syncromote
                     Console.WriteLine("WM_RBUTTONUP");
                     if (isHotkeyOn && isEstablished)
                     {
-                        try { send("|d$" + e.Point.x + "," + e.Point.y); }
+                        try { send("|d$" + positions[0] + "," + positions[1]); }
                         catch (Exception) { }
                     }
                 }
@@ -485,7 +503,7 @@ namespace Syncromote
                     Console.WriteLine("WM_RBUTTONDOWN");
                     if (isHotkeyOn && isEstablished)
                     {
-                        try { send("|a$" + e.Point.x + "," + e.Point.y); }
+                        try { send("|a$" + positions[0] + "," + positions[1]); }
                         catch (Exception) { }
                     }
                 }
@@ -640,7 +658,27 @@ namespace Syncromote
             
             
         }
+
+
+        private int[] PositionConvert(int x, int y)
+        {
+            int[] positions = new int[2];
+
+            if ((bool)chboxskype.IsChecked)
+            {
+                positions[0] = ((x - 132) * 1366) / 1100;
+                positions[1] = ((x - 80) * 1366) / 1100;
+            }
+            else
+            {
+                positions[0] = x;
+                positions[0] = y;
+            }
+            return positions;
+        }
+
     }
+    
     //____________________________________________________________________________________________________________
 
     public class MouseOperations

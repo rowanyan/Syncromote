@@ -98,6 +98,9 @@
     </Compile>
     <Compile Include="SettingsPage.cs" />
     <Compile Include="tcpConnection.cs" />
+    <Compile Include="transWindow.xaml.cs">
+      <DependentUpon>transWindow.xaml</DependentUpon>
+    </Compile>
     <Page Include="AboutUs.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -125,6 +128,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Notification.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="transWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

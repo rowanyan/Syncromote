@@ -19,12 +19,17 @@
             </ImageBrush.ImageSource>
         </ImageBrush>
     </Window.Background>
-    
+
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="313*" />
+            <RowDefinition Height="57*" />
+        </Grid.RowDefinitions>
         <Border Background="Black"
                 Opacity="0.4"
-                Margin="0,-32,0,0" />
-        
+                Margin="0,-32,0,0"
+                Grid.RowSpan="2" />
+
 
         <ui:NavigationView x:Name="NavView"
                            IsBackButtonVisible="Visible"
@@ -34,18 +39,17 @@
                            OpenPaneLength="105"
                            Panel.ZIndex="1"
                            ItemInvoked="NavView_ItemInvoked"
-                           >
+                           Grid.RowSpan="2">
 
             <ui:NavigationView.MenuItems>
                 <ui:NavigationViewItem Icon="Home"
                                        Content="Home"
-                                       x:Name="HomeBox"
-                                       >
+                                       x:Name="HomeBox">
 
                 </ui:NavigationViewItem>
                 <ui:NavigationViewItem Icon="Comment"
                                        Content="Chat"
-                                       x:Name="ChatBox"/>
+                                       x:Name="ChatBox" />
                 <ui:NavigationViewItem Icon="Phone"
                                        Content="About" />
 
@@ -54,8 +58,9 @@
 
 
         </ui:NavigationView>
-        
-        <Grid x:Name="Home">
+
+        <Grid x:Name="Home"
+              Grid.RowSpan="2">
             <Border BorderBrush="#404040"
                     BorderThickness="1">
                 <Grid MinHeight="400"
@@ -101,6 +106,12 @@
                                 Width="145">
 
                         </Button>
+
+                        <CheckBox Name="chboxskype"
+                                  Content="Skype remote mode"
+                                  Margin="44,150,0,0" 
+                                  IsChecked="False"
+                                  />
 
                         <TextBlock x:Name="ipTextBlock"
                                    Foreground="White"
