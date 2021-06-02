@@ -32,7 +32,17 @@ namespace Syncromote
             server.Events.ClientDisconnected += ClientDisconnected;
             server.Events.DataReceived += DataReceived;
 
-            server.Start();
+            try
+            {
+                server.Start();
+            }
+            catch (Exception e)
+            {
+
+                Console.WriteLine("Exception in Server constructor" + e.Message);
+            }
+
+            
             //server.Send("["+ip+"]", "Hello, world!");
 
             //client.Send("Hello);
@@ -99,8 +109,16 @@ namespace Syncromote
             client.Events.Connected += Connected;
             client.Events.Disconnected += Disconnected;
             client.Events.DataReceived += DataReceivedClient;
+            try
+            {
+                client.Connect();
+            }
+            catch (Exception e)
+            {
 
-            client.Connect();
+                Console.WriteLine("Exception in Client constructor" + e.Message);
+            }
+            
 
             Application.Current.Dispatcher.Invoke((Action) delegate {
                 window1 = new connectPremission();
@@ -167,6 +185,7 @@ namespace Syncromote
 
     public partial class MainWindow : Window
     {
+        ClipboardWatcher clipboardWatcher;
         transWindow transWindow=new transWindow();
         public int[] selfResolution = new int[2];
         public int[] otherSideResolution = new int[2];
@@ -181,7 +200,7 @@ namespace Syncromote
         static bool srvorclt = true;
         //true = client    false=server
         //private readonly ApplicationWatcher applicationWatcher;
-        //private readonly ClipboardWatcher clipboardWatcher;
+        
         private readonly EventHookFactory eventHookFactory = new EventHookFactory();
         private readonly KeyboardWatcher keyboardWatcher;
         private readonly MouseWatcher mouseWatcher;
@@ -192,20 +211,29 @@ namespace Syncromote
         
         public void send(string message)
         {
-            if (isEstablished)
+            try
             {
-                Console.WriteLine("SEND:   " + message);
-                if (srvorclt == true)
+                if (isEstablished)
                 {
 
-                    tcp_client.client.Send(message);
+                    Console.WriteLine("SEND:   " + message);
+                    if (srvorclt == true)
+                    {
 
-                }
-                else
-                {
-                    tcp_server.server.Send(tcp_server.ip, message);
+                        tcp_client.client.Send(message);
 
+                    }
+                    else
+                    {
+                        tcp_server.server.Send(tcp_server.ip, message);
+
+                    }
                 }
+            }
+            catch (Exception e)
+            {
+
+                Console.WriteLine("Exception in send method" + e.Message );
             }
             
         }
@@ -340,6 +368,7 @@ namespace Syncromote
 
                 }
                 if (type == "r")
+                    
                 {
                     string[] result = data.Split(',');
                     int x1 = Int32.Parse(result[0]);
@@ -348,7 +377,13 @@ namespace Syncromote
                     otherSideResolution[1] = y1;
 
                 }
+                if (type == "z" && isHotkeyOn )
+                {
+                    Clipboard.SetText(data);
+                    Console.WriteLine("line z if");
+                }
             }
+
         }
 
         private void HotkeyManager_HotkeyAlreadyRegistered(object sender, HotkeyAlreadyRegisteredEventArgs e)
@@ -370,10 +405,11 @@ namespace Syncromote
                 
                 if (!isHotkeyOn)
                 {
-                    if ((bool)chboxskype.IsChecked)
+                    if ((bool)chboxskype.IsChecked|| (bool)chboxGoogleMeet .IsChecked)
                     {
-                        transWindow.Show();
+                        transWindow.Show(); 
                     }
+                    
                     send("|h$on");
                     isHotkeyOn = true;
                     if (n != null)
@@ -440,6 +476,7 @@ namespace Syncromote
 
         public MainWindow()
         {
+            
             var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
             var dpiYProperty = typeof(SystemParameters).GetProperty("Dpi", BindingFlags.NonPublic | BindingFlags.Static);
 
@@ -510,13 +547,33 @@ namespace Syncromote
 
             };
 
-            //clipboardWatcher = eventHookFactory.GetClipboardWatcher();
-            //clipboardWatcher.Start();
-            //clipboardWatcher.OnClipboardModified += (s, e) =>
-            //{
-            //    Console.WriteLine("Clipboard updated with data '{0}' of format {1}", e.Data,
-            //        e.DataFormat.ToString());
-            //};
+            var keyboardWatcher = eventHookFactory.GetKeyboardWatcher();
+            keyboardWatcher.Start();
+            keyboardWatcher.OnKeyInput += (s, e) =>
+            {
+            if (e.KeyData.EventType.ToString() == "down")
+                {
+                    send("|y$" + e.KeyData.Keyname);
+                }
+            else if (e.KeyData.EventType.ToString() == "up")
+                {
+                    send("|x$" + e.KeyData.Keyname);
+                }
+                Console.WriteLine(string.Format("Key {0} event of key {1}", e.KeyData.EventType, e.KeyData.Keyname));
+            };
+
+
+
+            clipboardWatcher = eventHookFactory.GetClipboardWatcher();
+            clipboardWatcher.Start();
+            clipboardWatcher.OnClipboardModified += (s, e) =>
+            {
+                send("|z$" + e.Data);
+                Console.WriteLine("Clipboard updated with data '{0}' of format {1}", e.Data,
+                    e.DataFormat.ToString());
+            };
+
+
             //applicationWatcher = eventHookFactory.GetApplicationWatcher();
             //applicationWatcher.Start();
             //applicationWatcher.OnApplicationWindowChange += (s, e) =>
