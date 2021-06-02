@@ -52,7 +52,7 @@ namespace Syncromote
         public static void ClientConnected(object sender, ClientConnectedEventArgs e)
         {
 
-            //Console.WriteLine("[" + e.IpPort + "] client connected");
+            
             
             Application.Current.Dispatcher.Invoke((Action)delegate {
 
@@ -206,9 +206,9 @@ namespace Syncromote
         private readonly MouseWatcher mouseWatcher;
         private MouseWatcher mouseWatcher2;
         //private readonly PrintWatcher printWatcher;
-      
 
         
+
         public void send(string message)
         {
             try
@@ -249,6 +249,13 @@ namespace Syncromote
                 String data = request[i].Substring(2);
                 Console.WriteLine("GET:   " + type + "$" + data);
 
+                if (type == "z" && (isHotkeyOnOS))
+                {
+                    Application.Current.Dispatcher.Invoke((Action)delegate {
+                        Clipboard.SetText(data);
+                    });
+                    
+                }
                 if (type == "m")
                 {
                     try
@@ -257,7 +264,6 @@ namespace Syncromote
                         string[] result = data.Split(',');
                         int x1 = (Int32.Parse(result[0]) * selfResolution[0] / otherSideResolution[0]);
                         int y1 = (Int32.Parse(result[1]) * selfResolution[0] / otherSideResolution[0]);
-                        Console.WriteLine(x1 + "   " + y1);
                         MouseOperations.SetCursorPosition(x1, y1);
 
                     }
@@ -377,15 +383,11 @@ namespace Syncromote
                     otherSideResolution[1] = y1;
 
                 }
-                if (type == "z" && isHotkeyOn )
-                {
-                    Clipboard.SetText(data);
-                    Console.WriteLine("line z if");
-                }
+                
             }
 
         }
-
+        
         private void HotkeyManager_HotkeyAlreadyRegistered(object sender, HotkeyAlreadyRegisteredEventArgs e)
         {
             MessageBox.Show(string.Format("The hotkey {0} is already registered by another application", e.Name));
@@ -487,7 +489,7 @@ namespace Syncromote
             this.selfResolution[0] = (int)(System.Windows.SystemParameters.PrimaryScreenWidth * (double)(dpiX / 100));
             this.selfResolution[1] = (int)(System.Windows.SystemParameters.PrimaryScreenHeight * (double)(dpiX / 100));
 
-            Console.WriteLine(this.selfResolution[0] + "     " + this.selfResolution[1]);
+            
 
             HotkeyManager.HotkeyAlreadyRegistered += HotkeyManager_HotkeyAlreadyRegistered;
 
@@ -508,7 +510,6 @@ namespace Syncromote
                 int[] positions = PositionConvert(e.Point.x, e.Point.y);
                 if (e.Message.ToString() == "WM_LBUTTONUP")
                 {
-                    Console.WriteLine("WM_LBUTTONUP");
                     if (isHotkeyOn && isEstablished)
                     {
                         try {send("|n$" + positions[0]+ "," + positions[1]);}
@@ -519,7 +520,6 @@ namespace Syncromote
 
                 else if (e.Message.ToString() == "WM_LBUTTONDOWN")
                 {
-                    Console.WriteLine("WM_LBUTTONDOWN");
                     if (isHotkeyOn && isEstablished)
                     {
                         try { send("|e$" + positions[0] + "," + positions[1]); }
@@ -528,7 +528,6 @@ namespace Syncromote
                 }
                 else if (e.Message.ToString() == "WM_RBUTTONUP")
                 {
-                    Console.WriteLine("WM_RBUTTONUP");
                     if (isHotkeyOn && isEstablished)
                     {
                         try { send("|d$" + positions[0] + "," + positions[1]); }
@@ -537,7 +536,6 @@ namespace Syncromote
                 }
                 else if (e.Message.ToString() == "WM_RBUTTONDOWN")
                 {
-                    Console.WriteLine("WM_RBUTTONDOWN");
                     if (isHotkeyOn && isEstablished)
                     {
                         try { send("|a$" + positions[0] + "," + positions[1]); }
@@ -551,15 +549,19 @@ namespace Syncromote
             keyboardWatcher.Start();
             keyboardWatcher.OnKeyInput += (s, e) =>
             {
-            if (e.KeyData.EventType.ToString() == "down")
+                if (isHotkeyOn)
                 {
-                    send("|y$" + e.KeyData.Keyname);
+                    if (e.KeyData.EventType.ToString() == "down")
+                    {
+                        send("|y$" + e.KeyData.Keyname);
+                    }
+                    else if (e.KeyData.EventType.ToString() == "up")
+                    {
+                        send("|x$" + e.KeyData.Keyname);
+                    }
                 }
-            else if (e.KeyData.EventType.ToString() == "up")
-                {
-                    send("|x$" + e.KeyData.Keyname);
-                }
-                Console.WriteLine(string.Format("Key {0} event of key {1}", e.KeyData.EventType, e.KeyData.Keyname));
+                    
+                
             };
 
 
@@ -568,9 +570,12 @@ namespace Syncromote
             clipboardWatcher.Start();
             clipboardWatcher.OnClipboardModified += (s, e) =>
             {
-                send("|z$" + e.Data);
-                Console.WriteLine("Clipboard updated with data '{0}' of format {1}", e.Data,
-                    e.DataFormat.ToString());
+                if (isHotkeyOn)
+                {
+                    send("|z$" + e.Data);
+                    
+                }
+                
             };
 
 
