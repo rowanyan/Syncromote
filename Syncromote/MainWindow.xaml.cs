@@ -14,6 +14,7 @@ using System.Windows.Media;
 using System.Threading.Tasks;
 using System.Reflection;
 using WindowsInput;
+using System.Collections.Generic;
 
 namespace Syncromote
 {
@@ -186,6 +187,10 @@ namespace Syncromote
 
     public partial class MainWindow : Window
     {
+
+
+
+        InputSimulator keyinput = new InputSimulator();
         ClipboardWatcher clipboardWatcher;
         transWindow transWindow=new transWindow();
         public int[] selfResolution = new int[2];
@@ -258,21 +263,21 @@ namespace Syncromote
 
                 if (type == "y" && (isHotkeyOnOS))
                 {
+                    //Down
+
                     Application.Current.Dispatcher.Invoke((Action)delegate {
-                        InputSimulator keyinput = new InputSimulator();
-                        keyinput.Keyboard.KeyDown(WindowsInput.Native.VirtualKeyCode.ADD); // Hold the key down
-                        keyinput.Keyboard.KeyUp(WindowsInput.Native.VirtualKeyCode.ADD); // Release the key
+                        
+                        keyinput.Keyboard.KeyDown((WindowsInput.Native.VirtualKeyCode)Keyboard.Convert(data));
+                        
                     });
 
                 }
 
                 if (type == "x" && (isHotkeyOnOS))
                 {
+                    //Up
                     Application.Current.Dispatcher.Invoke((Action)delegate {
-
-                        //InputSimulator.Keyboard.KeyDown(keyCode); // Hold the key down
-                        //Thread.Sleep(100); // Hold key down for 100ms.
-                        //InputSimulator.Keyboard.KeyUp(keyCode); // Release the key
+                        keyinput.Keyboard.KeyUp((WindowsInput.Native.VirtualKeyCode)Keyboard.Convert(data));
                     });
 
                 }

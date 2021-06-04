@@ -360,3 +360,7 @@ C:\Users\KAVOSH\source\repos\rowanyan\Syncromote\Syncromote\obj\Debug\transWindo
 C:\Users\KAVOSH\source\repos\rowanyan\Syncromote\Syncromote\obj\Debug\transWindow.baml
 C:\Users\KAVOSH\source\repos\rowanyan\Syncromote\Syncromote\bin\Debug\WindowsInput.dll
 C:\Users\KAVOSH\source\repos\rowanyan\Syncromote\Syncromote\bin\Debug\WindowsInput.xml
+C:\Users\Arash\source\repos\rowanyan\Syncromote\Syncromote\bin\Debug\WindowsInput.dll
+C:\Users\Arash\source\repos\rowanyan\Syncromote\Syncromote\bin\Debug\WindowsInput.xml
+C:\Users\Arash\source\repos\rowanyan\Syncromote\Syncromote\obj\Debug\transWindow.g.cs
+C:\Users\Arash\source\repos\rowanyan\Syncromote\Syncromote\obj\Debug\transWindow.baml

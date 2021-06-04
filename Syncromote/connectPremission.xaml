@@ -16,8 +16,8 @@
         
         <Border.Background>
             <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
-                <GradientStop Color="LightPink" Offset="1"/>
-                <GradientStop Color="LightSteelBlue"/>
+                <GradientStop Color="#F7A8B8" Offset="1"/>
+                <GradientStop Color="#55CDFC"/>
 
                 <LinearGradientBrush.Transform>
                     <RotateTransform x:Name="AnimatedRotateTransform" CenterX="200" CenterY="200" Angle="10" />
