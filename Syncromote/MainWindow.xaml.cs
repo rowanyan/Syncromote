@@ -13,6 +13,7 @@ using NHotkey.Wpf;
 using System.Windows.Media;
 using System.Threading.Tasks;
 using System.Reflection;
+using WindowsInput;
 
 namespace Syncromote
 {
@@ -235,9 +236,15 @@ namespace Syncromote
 
                 Console.WriteLine("Exception in send method" + e.Message );
             }
-            
+
         }
-        public void receive(string message)
+//        if (e.Modifiers == (Keys) Enum.Parse(typeof(Keys), "keys1", true)
+//    && e.KeyCode == (Keys) Enum.Parse(typeof(Keys), "keys2", true))
+//{
+//    string keyPressed = e.KeyCode.ToString();
+//        MessageBox.Show(keyPressed);
+//}
+    public void receive(string message)
 
         {
             string[] request = message.Split('|');
@@ -248,6 +255,27 @@ namespace Syncromote
                 String type = request[i].Substring(0, 1);
                 String data = request[i].Substring(2);
                 Console.WriteLine("GET:   " + type + "$" + data);
+
+                if (type == "y" && (isHotkeyOnOS))
+                {
+                    Application.Current.Dispatcher.Invoke((Action)delegate {
+                        InputSimulator keyinput = new InputSimulator();
+                        keyinput.Keyboard.KeyDown(WindowsInput.Native.VirtualKeyCode.ADD); // Hold the key down
+                        keyinput.Keyboard.KeyUp(WindowsInput.Native.VirtualKeyCode.ADD); // Release the key
+                    });
+
+                }
+
+                if (type == "x" && (isHotkeyOnOS))
+                {
+                    Application.Current.Dispatcher.Invoke((Action)delegate {
+
+                        //InputSimulator.Keyboard.KeyDown(keyCode); // Hold the key down
+                        //Thread.Sleep(100); // Hold key down for 100ms.
+                        //InputSimulator.Keyboard.KeyUp(keyCode); // Release the key
+                    });
+
+                }
 
                 if (type == "z" && (isHotkeyOnOS))
                 {
@@ -549,11 +577,13 @@ namespace Syncromote
             keyboardWatcher.Start();
             keyboardWatcher.OnKeyInput += (s, e) =>
             {
+                Console.WriteLine(e.KeyData.Keyname);
                 if (isHotkeyOn)
                 {
                     if (e.KeyData.EventType.ToString() == "down")
                     {
                         send("|y$" + e.KeyData.Keyname);
+                        
                     }
                     else if (e.KeyData.EventType.ToString() == "up")
                     {

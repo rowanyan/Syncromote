@@ -8,11 +8,33 @@ namespace Syncromote
     {
         public static void Send(ScanCodeShort a)
         {
+
             INPUT[] Inputs = new INPUT[1];
             INPUT Input = new INPUT();
             Input.type = 1; // 1 = Keyboard Input
             Input.U.ki.wScan = a;
             Input.U.ki.dwFlags = KEYEVENTF.SCANCODE;
+            Inputs[0] = Input;
+            SendInput(1, Inputs, INPUT.Size);
+        }
+        public static void KeyDown(ScanCodeShort a)
+        {
+            
+            INPUT[] Inputs = new INPUT[1];
+            INPUT Input = new INPUT();
+            Input.type = 1; // 1 = Keyboard Input
+            Input.U.ki.wScan = a;
+            Input.U.ki.dwFlags = KEYEVENTF.SCANCODE;
+            Inputs[0] = Input;
+            SendInput(1, Inputs, INPUT.Size);
+        }
+        public static void KeyUp(ScanCodeShort a)
+        {
+            INPUT[] Inputs = new INPUT[1];
+            INPUT Input = new INPUT();
+            Input.type = 1; // 1 = Keyboard Input
+            Input.U.ki.wScan = a;
+            Input.U.ki.dwFlags = KEYEVENTF.KEYUP|KEYEVENTF.SCANCODE;
             Inputs[0] = Input;
             SendInput(1, Inputs, INPUT.Size);
         }
