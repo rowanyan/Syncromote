@@ -364,3 +364,5 @@ C:\Users\Arash\source\repos\rowanyan\Syncromote\Syncromote\bin\Debug\WindowsInpu
 C:\Users\Arash\source\repos\rowanyan\Syncromote\Syncromote\bin\Debug\WindowsInput.xml
 C:\Users\Arash\source\repos\rowanyan\Syncromote\Syncromote\obj\Debug\transWindow.g.cs
 C:\Users\Arash\source\repos\rowanyan\Syncromote\Syncromote\obj\Debug\transWindow.baml
+C:\Users\Arash\source\repos\rowanyan\Syncromote\Syncromote\obj\Debug\cursor.g.cs
+C:\Users\Arash\source\repos\rowanyan\Syncromote\Syncromote\obj\Debug\cursor.baml

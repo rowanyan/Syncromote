@@ -22,6 +22,7 @@ namespace Syncromote
         public AboutUs()
         {
             InitializeComponent();
+            ShowInTaskbar = false;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)

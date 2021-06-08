@@ -95,9 +95,17 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="cursor.xaml.cs">
+      <DependentUpon>cursor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Keyboard.cs" />
     <Compile Include="Notification.xaml.cs">
       <DependentUpon>Notification.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Settings1.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings1.settings</DependentUpon>
     </Compile>
     <Compile Include="SettingsPage.cs" />
     <Compile Include="tcpConnection.cs" />
@@ -109,6 +117,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="connectPremission.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="cursor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -163,6 +175,10 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <None Include="Settings1.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings1.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="img\icons8-ask-question-64.png" />
@@ -174,6 +190,7 @@
   <ItemGroup>
     <Resource Include="img\aboutus.jpg" />
     <Resource Include="img\github-11-xxl.png" />
+    <Resource Include="img\cur.png" />
     <Content Include="sounds\tuturu.wav">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

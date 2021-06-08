@@ -123,23 +123,31 @@
                                    HorizontalAlignment="Left"
                                    Panel.ZIndex="1"
                                    Height="17"
-                                   Margin="54,127,0,0"
+                                   
+                                   Margin="46,98,0,0"
                                    TextWrapping="Wrap"
                                    VerticalAlignment="Top"
-                                   Width="17"
+                                   
                                    FontSize="14"
-                                   Text="IP" />
+                                   Text="IP address" />
 
-                        <TextBox x:Name="ipTextBox"
-                                 HorizontalAlignment="Left"
-                                 Height="27"
-                                 Margin="44,120,0,0"
-                                 TextWrapping="Wrap"
-                                 VerticalAlignment="Top"
-                                 Width="145"
-                                 FontSize="16"
-                                 TextChanged="TextBox_TextChanged"
-                                 BorderThickness="0" />
+                        <ComboBox x:Name="ipTextBox"
+                                  HorizontalAlignment="Left"
+                                  
+                                  Margin="44,120,0,0"
+                                  IsEditable="True"
+                                  VerticalAlignment="Top"
+                                  Width="145"
+                                  
+                                  FontSize="16"
+                                  
+                                  BorderThickness="0">
+                            <TextBlock Text="" 
+                                       x:Name="ipItem1"/>
+                            <TextBlock Text=""
+                                       x:Name="ipItem2"/>
+                            
+                        </ComboBox>
                     </Grid>
 
 
@@ -164,7 +172,7 @@
                              VerticalAlignment="Top"
                              Width="179"
                              FontSize="18"
-                             TextChanged="TextBox_TextChanged"
+                             
                              Background="White"
                              Opacity="0.7"
                              BorderThickness="0" />

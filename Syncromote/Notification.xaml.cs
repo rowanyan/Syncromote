@@ -24,6 +24,7 @@ namespace Syncromote
         public Notification()
         {
             InitializeComponent();
+            ShowInTaskbar = false;
         }
         public Notification(string s, Brush color)
         {
@@ -36,6 +37,7 @@ namespace Syncromote
             dispatcherTimer.Tick += dispatcherTimer_Tick;
             dispatcherTimer.Interval = new TimeSpan(0, 0, 4);
             dispatcherTimer.Start();
+            ShowInTaskbar = false;
 
         }
         private void dispatcherTimer_Tick(object sender, EventArgs r)

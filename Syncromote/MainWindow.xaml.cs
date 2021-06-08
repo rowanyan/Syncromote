@@ -28,7 +28,7 @@ namespace Syncromote
 
         public static void startServer(String IP)
         {
-            server = new SimpleTcpServer(IP+":37664");
+            server = new SimpleTcpServer("*:37664");
 
             server.Events.ClientConnected += ClientConnected;
             server.Events.ClientDisconnected += ClientDisconnected;
@@ -75,6 +75,8 @@ namespace Syncromote
                     server.Send(e.IpPort, "p$2");
                     server.DisconnectClient(e.IpPort);
                     
+                    
+                    
                 }
             });
 
@@ -106,6 +108,7 @@ namespace Syncromote
         public static void initiateClient(String IP)
         {
             client = new SimpleTcpClient(IP + ":37664");
+            
             //int returnType = 0;
             // set events
             client.Events.Connected += Connected;
@@ -144,7 +147,7 @@ namespace Syncromote
             String type = Encoding.UTF8.GetString(e.Data).Substring(0, 1);
             String data = Encoding.UTF8.GetString(e.Data).Substring(2);
            
-
+            
             Application.Current.Dispatcher.Invoke((Action)delegate
             {
                 if (type == "p")
@@ -158,6 +161,20 @@ namespace Syncromote
                         reff.connectbutton.Content = "Disconnect";
                         reff.send("|r$" + reff.selfResolution[0] + "," + reff.selfResolution[1]);
 
+                        if (Settings1.Default.ip1 == null)
+                        {
+                            Settings1.Default.ip1 = reff.ipTextBox.Text;
+                            Settings1.Default.Save();
+
+                        }
+                        else
+                        {
+                            Settings1.Default.ip2 = Settings1.Default.ip1;
+                            Settings1.Default.ip1 = reff.ipTextBox.Text;
+                            Settings1.Default.Save();
+                        }
+                        reff.ipItem1.Text = Settings1.Default.ip1;
+                        reff.ipItem2.Text = Settings1.Default.ip2;
 
 
                     }
@@ -187,9 +204,13 @@ namespace Syncromote
 
     public partial class MainWindow : Window
     {
-
-
-
+        
+        int x_backup_l = 0, y_backup_l = 0;
+        int x_backup_r = 0, y_backup_r = 0;
+        bool LeftUpLock = false, LeftDownLock = false, RightUpLock = false , RightDownLock = false;
+        bool keyboardDownLock = false, keyboardUpLock = false;
+        bool clipboardLock = false;
+        cursor cur = new cursor();
         InputSimulator keyinput = new InputSimulator();
         ClipboardWatcher clipboardWatcher;
         transWindow transWindow=new transWindow();
@@ -205,7 +226,7 @@ namespace Syncromote
         int x = 0, y = 0;
         static bool srvorclt = true;
         //true = client    false=server
-        //private readonly ApplicationWatcher applicationWatcher;
+        // private readonly ApplicationWatcher applicationWatcher;
         
         private readonly EventHookFactory eventHookFactory = new EventHookFactory();
         private readonly KeyboardWatcher keyboardWatcher;
@@ -213,7 +234,151 @@ namespace Syncromote
         private MouseWatcher mouseWatcher2;
         //private readonly PrintWatcher printWatcher;
 
-        
+        public MainWindow()
+        {
+
+            var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
+            var dpiYProperty = typeof(SystemParameters).GetProperty("Dpi", BindingFlags.NonPublic | BindingFlags.Static);
+
+            var dpiX = (int)dpiXProperty.GetValue(null, null) / 0.96;
+            var dpiY = (int)dpiYProperty.GetValue(null, null) / 0.96;
+            HotkeyManager.HotkeyAlreadyRegistered += HotkeyManager_HotkeyAlreadyRegistered;
+
+            this.selfResolution[0] = (int)(System.Windows.SystemParameters.PrimaryScreenWidth * (double)(dpiX / 100));
+            this.selfResolution[1] = (int)(System.Windows.SystemParameters.PrimaryScreenHeight * (double)(dpiX / 100));
+
+
+
+            HotkeyManager.HotkeyAlreadyRegistered += HotkeyManager_HotkeyAlreadyRegistered;
+
+            HotkeyManager.Current.AddOrReplace("Increment", IncrementGesture, OnIncrement);
+            InitializeComponent();
+
+            ipItem1.Text = Settings1.Default.ip1;
+            ipItem2.Text = Settings1.Default.ip2;
+
+            if (Settings1.Default.ip1 == null)
+            {
+                ipItem1.Visibility = Visibility.Collapsed;
+            }
+            if (Settings1.Default.ip2 == null)
+            {
+                ipItem2.Visibility = Visibility.Collapsed;
+            }
+
+            tcp_client.reff = this;
+            tcp_server.reff = this;
+
+            Application.Current.Exit += OnApplicationExit;
+
+
+
+
+            mouseWatcher = eventHookFactory.GetMouseWatcher();
+            mouseWatcher.Start();
+            mouseWatcher.OnMouseInput += (s, e) =>
+            {
+                int[] positions = PositionConvert(e.Point.x, e.Point.y);
+                if (e.Message.ToString() == "WM_LBUTTONUP")
+                {
+                    if (isHotkeyOn && isEstablished && LeftUpLock == false)
+                    {
+                        try { send("|n$" + positions[0] + "," + positions[1]); }
+                        catch (Exception) { }
+                    }
+                    LeftUpLock = false;
+
+                }
+
+                else if (e.Message.ToString() == "WM_LBUTTONDOWN")
+                {
+                    if (isHotkeyOn && isEstablished && LeftDownLock == false)
+                    {
+                        try { send("|e$" + positions[0] + "," + positions[1]); }
+                        catch (Exception) { }
+                    }
+                    LeftDownLock = false;
+                }
+                else if (e.Message.ToString() == "WM_RBUTTONUP")
+                {
+                    if (isHotkeyOn && isEstablished && RightUpLock == false)
+                    {
+                        try { send("|d$" + positions[0] + "," + positions[1]); }
+                        catch (Exception) { }
+                    }
+                    RightUpLock = false;
+                }
+                else if (e.Message.ToString() == "WM_RBUTTONDOWN")
+                {
+                    if (isHotkeyOn && isEstablished && RightDownLock == false)
+                    {
+                        try { send("|a$" + positions[0] + "," + positions[1]); }
+                        catch (Exception) { }
+                    }
+                    RightDownLock = false;
+                }
+
+            };
+
+            var keyboardWatcher = eventHookFactory.GetKeyboardWatcher();
+            keyboardWatcher.Start();
+            keyboardWatcher.OnKeyInput += (s, e) =>
+            {
+                
+                if (isHotkeyOn)
+                {
+                    if (e.KeyData.EventType.ToString() == "down" && keyboardDownLock == false)
+                    {
+                        send("|y$" + e.KeyData.Keyname);
+
+                    }
+                    else if (e.KeyData.EventType.ToString() == "up" && keyboardUpLock == false)
+                    {
+                        send("|x$" + e.KeyData.Keyname);
+                    }
+                    keyboardDownLock = false;
+                    keyboardUpLock = false;
+                }
+
+
+            };
+
+
+
+            clipboardWatcher = eventHookFactory.GetClipboardWatcher();
+            clipboardWatcher.Start();
+            clipboardWatcher.OnClipboardModified += (s, e) =>
+            {
+                if ((isHotkeyOn || isHotkeyOnOS) && clipboardLock == false)
+                {
+                    send("|z$" + e.Data);
+
+                }
+                clipboardLock = false;
+
+
+            };
+
+
+            //applicationWatcher = eventHookFactory.GetApplicationWatcher();
+            //applicationWatcher.Start();
+            //applicationWatcher.OnApplicationWindowChange += (s, e) =>
+            //{
+            //    Console.WriteLine("Application window of '{0}' with the title '{1}' was {2}",
+            //        e.ApplicationData.AppName, e.ApplicationData.AppTitle, e.Event);
+            //};
+            //printWatcher = eventHookFactory.GetPrintWatcher();
+            //printWatcher.Start();
+            //printWatcher.OnPrintEvent += (s, e) =>
+            //{
+            //    Console.WriteLine("Printer '{0}' currently printing {1} pages.", e.EventData.PrinterName,
+            //        e.EventData.Pages);
+            //};
+
+            eventHookFactory.Dispose();
+
+
+        }
 
         public void send(string message)
         {
@@ -249,6 +414,8 @@ namespace Syncromote
 //    string keyPressed = e.KeyCode.ToString();
 //        MessageBox.Show(keyPressed);
 //}
+
+    //? Recive
     public void receive(string message)
 
         {
@@ -263,31 +430,21 @@ namespace Syncromote
 
                 if (type == "y" )
                 {
-                    //Down
-                    Console.WriteLine("  Converter down:  " + Keyboard.Convert(data.ToLower()));
+                    keyboardDownLock = true;
                     keyinput.Keyboard.KeyDown((WindowsInput.Native.VirtualKeyCode)Keyboard.Convert(data.ToLower()));
-                    //Application.Current.Dispatcher.Invoke((Action)delegate {
-
-                    //    keyinput.Keyboard.KeyDown((WindowsInput.Native.VirtualKeyCode)Keyboard.Convert(data.ToLower()));
-
-                    //});
 
                 }
 
                 if (type == "x" )
                 {
+                    keyboardUpLock = true;
                     keyinput.Keyboard.KeyUp((WindowsInput.Native.VirtualKeyCode)Keyboard.Convert(data.ToLower()));
-                    //Up
-
-                    //Application.Current.Dispatcher.Invoke((Action)delegate {
-
-                    //    keyinput.Keyboard.KeyUp((WindowsInput.Native.VirtualKeyCode)Keyboard.Convert(data.ToLower()));
-                    //});
 
                 }
 
                 if (type == "z" && (isHotkeyOnOS))
                 {
+                    clipboardLock = true;
                     Application.Current.Dispatcher.Invoke((Action)delegate {
                         Clipboard.SetText(data);
                     });
@@ -297,11 +454,15 @@ namespace Syncromote
                 {
                     try
                     {
-
+                        
+                        
                         string[] result = data.Split(',');
                         int x1 = (Int32.Parse(result[0]) * selfResolution[0] / otherSideResolution[0]);
                         int y1 = (Int32.Parse(result[1]) * selfResolution[0] / otherSideResolution[0]);
-                        MouseOperations.SetCursorPosition(x1, y1);
+                        cur.Left = x1;
+                        cur.Top = y1;
+                        
+                        //MouseOperations.SetCursorPosition(x1, y1);
 
                     }
                     catch (Exception)
@@ -339,6 +500,7 @@ namespace Syncromote
                             Application.Current.Dispatcher.Invoke((Action)delegate
                             {
                                 n = new Notification("The other side's hotkey is on", Brushes.White);
+                                cur.Show();
                             });
 
 
@@ -355,6 +517,7 @@ namespace Syncromote
                         Application.Current.Dispatcher.Invoke((Action)delegate
                         {
                             n = new Notification("The other side's hotkey is off", Brushes.White);
+                            cur.Hide();
                         });
 
                     }
@@ -363,38 +526,57 @@ namespace Syncromote
 
                 if (type == "n")
                 {
+                    LeftUpLock = true;
                     string[] result = data.Split(',');
                     int x1 = (Int32.Parse(result[0]) * selfResolution[0] / otherSideResolution[0]);
                     int y1 = (Int32.Parse(result[1]) * selfResolution[0] / otherSideResolution[0]);
                     MouseOperations.SetCursorPosition(x1, y1);
                     MouseOperations.MouseEvent(MouseOperations.MouseEventFlags.LeftUp);
 
+                    MouseOperations.SetCursorPosition(x_backup_l, y_backup_l);
+
                 }
                 if (type == "e")
                 {
+                    MouseOperations.MousePoint mouseBackup = MouseOperations.GetCursorPosition();
+                    x_backup_l = mouseBackup.X;
+                    y_backup_l = mouseBackup.Y;
+
+                    LeftDownLock = true;
                     string[] result = data.Split(',');
                     int x1 = (Int32.Parse(result[0]) * selfResolution[0] / otherSideResolution[0]);
                     int y1 = (Int32.Parse(result[1]) * selfResolution[0] / otherSideResolution[0]);
+
                     MouseOperations.SetCursorPosition(x1, y1);
                     MouseOperations.MouseEvent(MouseOperations.MouseEventFlags.LeftDown);
+
 
                 }
                 if (type == "d")
                 {
+                    RightUpLock = true;
                     string[] result = data.Split(',');
                     int x1 = (Int32.Parse(result[0]) * selfResolution[0] / otherSideResolution[0]);
                     int y1 = (Int32.Parse(result[1]) * selfResolution[0] / otherSideResolution[0]);
                     MouseOperations.SetCursorPosition(x1, y1);
                     MouseOperations.MouseEvent(MouseOperations.MouseEventFlags.RightUp);
 
+                    MouseOperations.SetCursorPosition(x_backup_r, y_backup_r);
+
                 }
                 if (type == "a")
                 {
+                    MouseOperations.MousePoint mouseBackup = MouseOperations.GetCursorPosition();
+                    x_backup_r = mouseBackup.X;
+                    y_backup_r = mouseBackup.Y;
+
+                    RightDownLock = true;
                     string[] result = data.Split(',');
                     int x1 = (Int32.Parse(result[0]) * selfResolution[0] / otherSideResolution[0]);
                     int y1 = (Int32.Parse(result[1]) * selfResolution[0] / otherSideResolution[0]);
                     MouseOperations.SetCursorPosition(x1, y1);
                     MouseOperations.MouseEvent(MouseOperations.MouseEventFlags.RightDown);
+
 
                 }
 
@@ -513,130 +695,7 @@ namespace Syncromote
 
         }
 
-        public MainWindow()
-        {
-            
-            var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
-            var dpiYProperty = typeof(SystemParameters).GetProperty("Dpi", BindingFlags.NonPublic | BindingFlags.Static);
-
-            var dpiX = (int)dpiXProperty.GetValue(null, null) / 0.96;
-            var dpiY = (int)dpiYProperty.GetValue(null, null) / 0.96;
-            HotkeyManager.HotkeyAlreadyRegistered += HotkeyManager_HotkeyAlreadyRegistered;
-
-            this.selfResolution[0] = (int)(System.Windows.SystemParameters.PrimaryScreenWidth * (double)(dpiX / 100));
-            this.selfResolution[1] = (int)(System.Windows.SystemParameters.PrimaryScreenHeight * (double)(dpiX / 100));
-
-            
-
-            HotkeyManager.HotkeyAlreadyRegistered += HotkeyManager_HotkeyAlreadyRegistered;
-
-            HotkeyManager.Current.AddOrReplace("Increment", IncrementGesture, OnIncrement);
-            InitializeComponent();
-            tcp_client.reff = this;
-            tcp_server.reff = this;
-            
-            Application.Current.Exit += OnApplicationExit;
-
-
-            
-
-            mouseWatcher = eventHookFactory.GetMouseWatcher();
-            mouseWatcher.Start();
-            mouseWatcher.OnMouseInput += (s, e) =>
-            {
-                int[] positions = PositionConvert(e.Point.x, e.Point.y);
-                if (e.Message.ToString() == "WM_LBUTTONUP")
-                {
-                    if (isHotkeyOn && isEstablished)
-                    {
-                        try {send("|n$" + positions[0]+ "," + positions[1]);}
-                        catch (Exception){}
-                    }
-                 
-                }
-
-                else if (e.Message.ToString() == "WM_LBUTTONDOWN")
-                {
-                    if (isHotkeyOn && isEstablished)
-                    {
-                        try { send("|e$" + positions[0] + "," + positions[1]); }
-                        catch (Exception) { }
-                    }
-                }
-                else if (e.Message.ToString() == "WM_RBUTTONUP")
-                {
-                    if (isHotkeyOn && isEstablished)
-                    {
-                        try { send("|d$" + positions[0] + "," + positions[1]); }
-                        catch (Exception) { }
-                    }
-                }
-                else if (e.Message.ToString() == "WM_RBUTTONDOWN")
-                {
-                    if (isHotkeyOn && isEstablished)
-                    {
-                        try { send("|a$" + positions[0] + "," + positions[1]); }
-                        catch (Exception) { }
-                    }
-                }
-
-            };
-
-            var keyboardWatcher = eventHookFactory.GetKeyboardWatcher();
-            keyboardWatcher.Start();
-            keyboardWatcher.OnKeyInput += (s, e) =>
-            {
-                Console.WriteLine(e.KeyData.Keyname);
-                if (isHotkeyOnOS)
-                {
-                    if (e.KeyData.EventType.ToString() == "down")
-                    {
-                        send("|y$" + e.KeyData.Keyname);
-                        
-                    }
-                    else if (e.KeyData.EventType.ToString() == "up")
-                    {
-                        send("|x$" + e.KeyData.Keyname);
-                    }
-                }
-                    
-                
-            };
-
-
-
-            clipboardWatcher = eventHookFactory.GetClipboardWatcher();
-            clipboardWatcher.Start();
-            clipboardWatcher.OnClipboardModified += (s, e) =>
-            {
-                if (isHotkeyOn)
-                {
-                    send("|z$" + e.Data);
-                    
-                }
-                
-            };
-
-
-            //applicationWatcher = eventHookFactory.GetApplicationWatcher();
-            //applicationWatcher.Start();
-            //applicationWatcher.OnApplicationWindowChange += (s, e) =>
-            //{
-            //    Console.WriteLine("Application window of '{0}' with the title '{1}' was {2}",
-            //        e.ApplicationData.AppName, e.ApplicationData.AppTitle, e.Event);
-            //};
-            //printWatcher = eventHookFactory.GetPrintWatcher();
-            //printWatcher.Start();
-            //printWatcher.OnPrintEvent += (s, e) =>
-            //{
-            //    Console.WriteLine("Printer '{0}' currently printing {1} pages.", e.EventData.PrinterName,
-            //        e.EventData.Pages);
-            //};
-
-            eventHookFactory.Dispose();
-
-
-        }
+        
 
 
         private void OnApplicationExit(object sender, EventArgs e)
@@ -660,19 +719,7 @@ namespace Syncromote
             startButton.IsEnabled = false;
         }
 
-        
 
-        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            if (ipTextBox.Text != "")
-            {
-                ipTextBlock.Visibility = Visibility.Hidden;
-            }
-            else
-            {
-                ipTextBlock.Visibility = Visibility.Visible;
-            }
-        }
 
         private void connectbutton_Click(object sender, RoutedEventArgs e)
         {

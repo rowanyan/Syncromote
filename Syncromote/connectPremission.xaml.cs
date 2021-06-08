@@ -30,6 +30,7 @@ namespace Syncromote
 
             SoundPlayer playSound = new SoundPlayer(Syncromote.Properties.Resources.tuturu);
             playSound.Play();
+            ShowInTaskbar = false;
 
         }
 
@@ -45,8 +46,8 @@ namespace Syncromote
 
             SoundPlayer playSound = new SoundPlayer(Syncromote.Properties.Resources.tuturu);
             playSound.Play();
+            ShowInTaskbar = false;
 
-            
 
         }
 
