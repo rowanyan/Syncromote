@@ -261,24 +261,28 @@ namespace Syncromote
                 String data = request[i].Substring(2);
                 Console.WriteLine("GET:   " + type + "$" + data);
 
-                if (type == "y" && (isHotkeyOnOS))
+                if (type == "y" )
                 {
                     //Down
+                    Console.WriteLine("  Converter down:  " + Keyboard.Convert(data.ToLower()));
+                    keyinput.Keyboard.KeyDown((WindowsInput.Native.VirtualKeyCode)Keyboard.Convert(data.ToLower()));
+                    //Application.Current.Dispatcher.Invoke((Action)delegate {
 
-                    Application.Current.Dispatcher.Invoke((Action)delegate {
-                        
-                        keyinput.Keyboard.KeyDown((WindowsInput.Native.VirtualKeyCode)Keyboard.Convert(data));
-                        
-                    });
+                    //    keyinput.Keyboard.KeyDown((WindowsInput.Native.VirtualKeyCode)Keyboard.Convert(data.ToLower()));
+
+                    //});
 
                 }
 
-                if (type == "x" && (isHotkeyOnOS))
+                if (type == "x" )
                 {
+                    keyinput.Keyboard.KeyUp((WindowsInput.Native.VirtualKeyCode)Keyboard.Convert(data.ToLower()));
                     //Up
-                    Application.Current.Dispatcher.Invoke((Action)delegate {
-                        keyinput.Keyboard.KeyUp((WindowsInput.Native.VirtualKeyCode)Keyboard.Convert(data));
-                    });
+
+                    //Application.Current.Dispatcher.Invoke((Action)delegate {
+
+                    //    keyinput.Keyboard.KeyUp((WindowsInput.Native.VirtualKeyCode)Keyboard.Convert(data.ToLower()));
+                    //});
 
                 }
 
@@ -583,7 +587,7 @@ namespace Syncromote
             keyboardWatcher.OnKeyInput += (s, e) =>
             {
                 Console.WriteLine(e.KeyData.Keyname);
-                if (isHotkeyOn)
+                if (isHotkeyOnOS)
                 {
                     if (e.KeyData.EventType.ToString() == "down")
                     {

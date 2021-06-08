@@ -4,12 +4,12 @@ using System.Runtime.InteropServices;
 
 namespace Syncromote
 {
-
+    
     public class Keyboard
     {
         public static int Convert(string key)
         {
-            int index = ArraykeyName.BinarySearch(key);
+            int index = ArraykeyName.IndexOf(key);
             return ArraykeyInt[index];
         }
 
