@@ -279,7 +279,16 @@ namespace Syncromote
             mouseWatcher.Start();
             mouseWatcher.OnMouseInput += (s, e) =>
             {
+
                 int[] positions = PositionConvert(e.Point.x, e.Point.y);
+                Console.WriteLine(e.Message.ToString());
+                if (e.Message.ToString() == "WM_MOUSEMOVE")
+                {
+                    if (isHotkeyOn && isEstablished)
+                    {
+                        send("|"+"m$" + positions[0] + "," + positions[1]);
+                    }
+                }
                 if (e.Message.ToString() == "WM_LBUTTONUP")
                 {
                     if (isHotkeyOn && isEstablished && LeftUpLock == false)
@@ -660,7 +669,7 @@ namespace Syncromote
                     }
                     dispatcherTimer.Tick += dispatcherTimer_Tick;
                     dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 50);
-                    dispatcherTimer.Start();
+                    //dispatcherTimer.Start();
 
 
                 }
@@ -675,11 +684,11 @@ namespace Syncromote
                     send("|h$off");
                     n = new Notification("Your hotkey is off", Brushes.White);
                     isHotkeyOn = false;
-                    dispatcherTimer.Stop();
+                    //dispatcherTimer.Stop(); 
                 }
                 Console.WriteLine("Hotkey   :" + isHotkeyOn);
             }
-
+            
             e.Handled = true;
         }
 
@@ -695,7 +704,7 @@ namespace Syncromote
                 y = a.Y;
                 if (isHotkeyOn)
                 {
-                    send("|"+"m$" + position[0] + "," + position[1]);
+                    //send("|"+"m$" + position[0] + "," + position[1]);
                 }
 
             }
