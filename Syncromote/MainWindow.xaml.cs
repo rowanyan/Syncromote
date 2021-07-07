@@ -205,9 +205,7 @@ namespace Syncromote
 
     public partial class MainWindow : Window
     {
-        
-        int x_backup_l = 0, y_backup_l = 0;
-        int x_backup_r = 0, y_backup_r = 0;
+        bool MMOVElock=false;
         bool LeftUpLock = false, LeftDownLock = false, RightUpLock = false , RightDownLock = false;
         bool keyboardDownLock = false, keyboardUpLock = false;
         bool clipboardLock = false;
@@ -284,10 +282,11 @@ namespace Syncromote
                 Console.WriteLine(e.Message.ToString());
                 if (e.Message.ToString() == "WM_MOUSEMOVE")
                 {
-                    if (isHotkeyOn && isEstablished)
+                    if (isHotkeyOn && isEstablished && MMOVElock == false)
                     {
                         send("|"+"m$" + positions[0] + "," + positions[1]);
                     }
+                    MMOVElock = false;
                 }
                 if (e.Message.ToString() == "WM_LBUTTONUP")
                 {
@@ -482,8 +481,8 @@ namespace Syncromote
                 {
                     try
                     {
-                        
-                        
+
+                        MMOVElock = true;
                         string[] result = data.Split(',');
                         int x1 = (Int32.Parse(result[0]) * selfResolution[0] / otherSideResolution[0]);
                         int y1 = (Int32.Parse(result[1]) * selfResolution[0] / otherSideResolution[0]);
