@@ -28,7 +28,7 @@ namespace Syncromote
 
         public static void startServer(String IP)
         {
-            server = new SimpleTcpServer("*:37664");
+            server = new SimpleTcpServer("*:27664");
 
             server.Events.ClientConnected += ClientConnected;
             server.Events.ClientDisconnected += ClientDisconnected;
@@ -108,7 +108,7 @@ namespace Syncromote
 
         public static void initiateClient(String IP)
         {
-            client = new SimpleTcpClient(IP + ":37664");
+            client = new SimpleTcpClient(IP + ":27664");
             
             //int returnType = 0;
             // set events
@@ -220,17 +220,16 @@ namespace Syncromote
         System.Windows.Threading.DispatcherTimer dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
         public bool isHotkeyOn = false;
         public bool isHotkeyOnOS = false;
-        private static readonly KeyGesture IncrementGesture = new KeyGesture(Key.Q, ModifierKeys.Alt);
+        private static readonly KeyGesture IncrementGesture = new KeyGesture(Key.W, ModifierKeys.Alt);
         public bool isEstablished = false;
         int x = 0, y = 0;
         static bool srvorclt = true;
         //true = client    false=server
         // private readonly ApplicationWatcher applicationWatcher;
         
-        private readonly EventHookFactory eventHookFactory = new EventHookFactory();
+        
         private readonly KeyboardWatcher keyboardWatcher;
         private readonly MouseWatcher mouseWatcher;
-        private MouseWatcher mouseWatcher2;
         //private readonly PrintWatcher printWatcher;
 
         public MainWindow()
@@ -272,120 +271,120 @@ namespace Syncromote
 
 
 
-
-            mouseWatcher = eventHookFactory.GetMouseWatcher();
-            mouseWatcher.Start();
-            mouseWatcher.OnMouseInput += (s, e) =>
+            using (var eventHookFactory = new EventHookFactory())
             {
+                mouseWatcher = eventHookFactory.GetMouseWatcher();
+                mouseWatcher.Start();
+                mouseWatcher.OnMouseInput += (s, e) =>
+                {
 
-                int[] positions = PositionConvert(e.Point.x, e.Point.y);
-                Console.WriteLine(e.Message.ToString());
-                if (e.Message.ToString() == "WM_MOUSEMOVE")
-                {
-                    if (isHotkeyOn && isEstablished && MMOVElock == false)
+                    int[] positions = PositionConvert(e.Point.x, e.Point.y);
+                    if (e.Message.ToString() == "WM_MOUSEMOVE")
                     {
-                        send("|"+"m$" + positions[0] + "," + positions[1]);
+                        if (isHotkeyOn && isEstablished && MMOVElock == false)
+                        {
+                            send("|" + "m$" + positions[0] + "," + positions[1]);
+                        }
+                        MMOVElock = false;
                     }
-                    MMOVElock = false;
-                }
-                if (e.Message.ToString() == "WM_LBUTTONUP")
-                {
-                    if (isHotkeyOn && isEstablished && LeftUpLock == false)
+                    if (e.Message.ToString() == "WM_LBUTTONUP")
                     {
-                        try { send("|n$" + positions[0] + "," + positions[1]); }
-                        catch (Exception) { }
-                    }
-                    LeftUpLock = false;
-
-                }
-
-                else if (e.Message.ToString() == "WM_LBUTTONDOWN")
-                {
-                    if (isHotkeyOn && isEstablished && LeftDownLock == false)
-                    {
-                        try { send("|e$" + positions[0] + "," + positions[1]); }
-                        catch (Exception) { }
-                    }
-                    LeftDownLock = false;
-                }
-                else if (e.Message.ToString() == "WM_RBUTTONUP")
-                {
-                    if (isHotkeyOn && isEstablished && RightUpLock == false)
-                    {
-                        try { send("|d$" + positions[0] + "," + positions[1]); }
-                        catch (Exception) { }
-                    }
-                    RightUpLock = false;
-                }
-                else if (e.Message.ToString() == "WM_RBUTTONDOWN")
-                {
-                    if (isHotkeyOn && isEstablished && RightDownLock == false)
-                    {
-                        try { send("|a$" + positions[0] + "," + positions[1]); }
-                        catch (Exception) { }
-                    }
-                    RightDownLock = false;
-                }
-
-            };
-
-            var keyboardWatcher = eventHookFactory.GetKeyboardWatcher();
-            keyboardWatcher.Start();
-            keyboardWatcher.OnKeyInput += (s, e) =>
-            {
-                
-                if (isHotkeyOn)
-                {
-                    if (e.KeyData.EventType.ToString() == "down" && keyboardDownLock == false)
-                    {
-                        send("|y$" + e.KeyData.Keyname);
+                        if (isHotkeyOn && isEstablished && LeftUpLock == false)
+                        {
+                            try { send("|n$" + positions[0] + "," + positions[1]); }
+                            catch (Exception) { }
+                        }
+                        LeftUpLock = false;
 
                     }
-                    else if (e.KeyData.EventType.ToString() == "up" && keyboardUpLock == false)
+
+                    else if (e.Message.ToString() == "WM_LBUTTONDOWN")
                     {
-                        send("|x$" + e.KeyData.Keyname);
+                        if (isHotkeyOn && isEstablished && LeftDownLock == false)
+                        {
+                            try { send("|e$" + positions[0] + "," + positions[1]); }
+                            catch (Exception) { }
+                        }
+                        LeftDownLock = false;
                     }
-                    keyboardDownLock = false;
-                    keyboardUpLock = false;
-                }
+                    else if (e.Message.ToString() == "WM_RBUTTONUP")
+                    {
+                        if (isHotkeyOn && isEstablished && RightUpLock == false)
+                        {
+                            try { send("|d$" + positions[0] + "," + positions[1]); }
+                            catch (Exception) { }
+                        }
+                        RightUpLock = false;
+                    }
+                    else if (e.Message.ToString() == "WM_RBUTTONDOWN")
+                    {
+                        if (isHotkeyOn && isEstablished && RightDownLock == false)
+                        {
+                            try { send("|a$" + positions[0] + "," + positions[1]); }
+                            catch (Exception) { }
+                        }
+                        RightDownLock = false;
+                    }
 
+                };
 
-            };
-
-
-
-            clipboardWatcher = eventHookFactory.GetClipboardWatcher();
-            clipboardWatcher.Start();
-            clipboardWatcher.OnClipboardModified += (s, e) =>
-            {
-                if ((isHotkeyOn || isHotkeyOnOS) && clipboardLock == false)
+                keyboardWatcher = eventHookFactory.GetKeyboardWatcher();
+                keyboardWatcher.Start();
+                keyboardWatcher.OnKeyInput += (s, e) =>
                 {
-                    send("|z$" + e.Data);
+                    
+                    if (isHotkeyOn)
+                    {
+                        if (e.KeyData.EventType.ToString() == "down" && keyboardDownLock == false)
+                        {
+                            send("|y$" + e.KeyData.Keyname);
 
-                }
-                clipboardLock = false;
+                        }
+                        else if (e.KeyData.EventType.ToString() == "up" && keyboardUpLock == false)
+                        {
+                            send("|x$" + e.KeyData.Keyname);
+                        }
+                        keyboardDownLock = false;
+                        keyboardUpLock = false;
+                    }
 
 
-            };
+                };
 
 
-            //applicationWatcher = eventHookFactory.GetApplicationWatcher();
-            //applicationWatcher.Start();
-            //applicationWatcher.OnApplicationWindowChange += (s, e) =>
-            //{
-            //    Console.WriteLine("Application window of '{0}' with the title '{1}' was {2}",
-            //        e.ApplicationData.AppName, e.ApplicationData.AppTitle, e.Event);
-            //};
-            //printWatcher = eventHookFactory.GetPrintWatcher();
-            //printWatcher.Start();
-            //printWatcher.OnPrintEvent += (s, e) =>
-            //{
-            //    Console.WriteLine("Printer '{0}' currently printing {1} pages.", e.EventData.PrinterName,
-            //        e.EventData.Pages);
-            //};
 
-            eventHookFactory.Dispose();
+                clipboardWatcher = eventHookFactory.GetClipboardWatcher();
+                clipboardWatcher.Start();
+                clipboardWatcher.OnClipboardModified += (s, e) =>
+                {
+                    if ((isHotkeyOn || isHotkeyOnOS) && clipboardLock == false)
+                    {
+                        send("|z$" + e.Data);
 
+                    }
+                    clipboardLock = false;
+
+
+                };
+
+
+                //applicationWatcher = eventHookFactory.GetApplicationWatcher();
+                //applicationWatcher.Start();
+                //applicationWatcher.OnApplicationWindowChange += (s, e) =>
+                //{
+                //    Console.WriteLine("Application window of '{0}' with the title '{1}' was {2}",
+                //        e.ApplicationData.AppName, e.ApplicationData.AppTitle, e.Event);
+                //};
+                //printWatcher = eventHookFactory.GetPrintWatcher();
+                //printWatcher.Start();
+                //printWatcher.OnPrintEvent += (s, e) =>
+                //{
+                //    Console.WriteLine("Printer '{0}' currently printing {1} pages.", e.EventData.PrinterName,
+                //        e.EventData.Pages);
+                //};
+
+                //eventHookFactory.Dispose();
+            }
 
         }
 
@@ -511,8 +510,8 @@ namespace Syncromote
                             }
                             Application.Current.Dispatcher.Invoke((Action)delegate
                             {
-                                n = new Notification("Both hotkeys are on", Brushes.Red);
-                                cur.Show();
+                                n = new Notification("Both hotkeys are on", Brushes.Violet);
+                                //cur.Show();
                             });
                         }
                         else
@@ -525,7 +524,7 @@ namespace Syncromote
                             Application.Current.Dispatcher.Invoke((Action)delegate
                             {
                                 n = new Notification("The other side's hotkey is on", Brushes.White);
-                                cur.Show();
+                                //cur.Show();
                             });
 
 
@@ -659,7 +658,7 @@ namespace Syncromote
                     }
                     if (isHotkeyOnOS)
                     {
-                        n = new Notification("Both hotkeys are on", Brushes.Red);
+                        n = new Notification("Both hotkeys are on", Brushes.Violet);
                     }
                     else
                     {
@@ -725,7 +724,7 @@ namespace Syncromote
             //applicationWatcher.Stop();
             //printWatcher.Stop();
 
-            eventHookFactory.Dispose();
+            //eventHookFactory.Dispose();
         }
 
         private void Button_Click_2(object sender, RoutedEventArgs e)
