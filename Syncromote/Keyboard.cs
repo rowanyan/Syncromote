@@ -10,6 +10,7 @@ namespace Syncromote
         public static int Convert(string key)
         {
             int index = ArraykeyName.IndexOf(key);
+            
             return ArraykeyInt[index];
         }
 

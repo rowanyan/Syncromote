@@ -366,3 +366,5 @@ C:\Users\Arash\source\repos\rowanyan\Syncromote\Syncromote\obj\Debug\transWindow
 C:\Users\Arash\source\repos\rowanyan\Syncromote\Syncromote\obj\Debug\transWindow.baml
 C:\Users\Arash\source\repos\rowanyan\Syncromote\Syncromote\obj\Debug\cursor.g.cs
 C:\Users\Arash\source\repos\rowanyan\Syncromote\Syncromote\obj\Debug\cursor.baml
+C:\Users\KAVOSH\source\repos\rowanyan\Syncromote\Syncromote\obj\Debug\cursor.g.cs
+C:\Users\KAVOSH\source\repos\rowanyan\Syncromote\Syncromote\obj\Debug\cursor.baml

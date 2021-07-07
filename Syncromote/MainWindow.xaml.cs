@@ -94,11 +94,12 @@ namespace Syncromote
             reff.receive(Encoding.UTF8.GetString(e.Data));
             
         }
+    }
 
     //____________________________________________________________________________________________________________
 
 
-    }
+    
     public class tcp_client
     {
         public static MainWindow reff;
@@ -431,15 +432,33 @@ namespace Syncromote
                 if (type == "y" )
                 {
                     keyboardDownLock = true;
-                    keyinput.Keyboard.KeyDown((WindowsInput.Native.VirtualKeyCode)Keyboard.Convert(data.ToLower()));
+                    try
+                    {
+                        keyinput.Keyboard.KeyDown((WindowsInput.Native.VirtualKeyCode)Keyboard.Convert(data.ToLower()));
 
+                    }
+                    catch (Exception)
+                    {
+
+                        
+                    }
+                    
                 }
 
                 if (type == "x" )
                 {
-                    keyboardUpLock = true;
-                    keyinput.Keyboard.KeyUp((WindowsInput.Native.VirtualKeyCode)Keyboard.Convert(data.ToLower()));
+                    try
+                    {
+                        keyinput.Keyboard.KeyUp((WindowsInput.Native.VirtualKeyCode)Keyboard.Convert(data.ToLower()));
 
+                    }
+                    catch (Exception)
+                    {
+
+                       
+                    }
+                    keyboardUpLock = true;
+                    
                 }
 
                 if (type == "z" && (isHotkeyOnOS))
@@ -459,10 +478,7 @@ namespace Syncromote
                         string[] result = data.Split(',');
                         int x1 = (Int32.Parse(result[0]) * selfResolution[0] / otherSideResolution[0]);
                         int y1 = (Int32.Parse(result[1]) * selfResolution[0] / otherSideResolution[0]);
-                        cur.Left = x1;
-                        cur.Top = y1;
-                        
-                        //MouseOperations.SetCursorPosition(x1, y1);
+                        MouseOperations.SetCursorPosition(x1, y1);
 
                     }
                     catch (Exception)
@@ -488,6 +504,7 @@ namespace Syncromote
                             Application.Current.Dispatcher.Invoke((Action)delegate
                             {
                                 n = new Notification("Both hotkeys are on", Brushes.Red);
+                                cur.Show();
                             });
                         }
                         else
@@ -533,14 +550,12 @@ namespace Syncromote
                     MouseOperations.SetCursorPosition(x1, y1);
                     MouseOperations.MouseEvent(MouseOperations.MouseEventFlags.LeftUp);
 
-                    MouseOperations.SetCursorPosition(x_backup_l, y_backup_l);
 
                 }
                 if (type == "e")
                 {
                     MouseOperations.MousePoint mouseBackup = MouseOperations.GetCursorPosition();
-                    x_backup_l = mouseBackup.X;
-                    y_backup_l = mouseBackup.Y;
+                    
 
                     LeftDownLock = true;
                     string[] result = data.Split(',');
@@ -561,15 +576,11 @@ namespace Syncromote
                     MouseOperations.SetCursorPosition(x1, y1);
                     MouseOperations.MouseEvent(MouseOperations.MouseEventFlags.RightUp);
 
-                    MouseOperations.SetCursorPosition(x_backup_r, y_backup_r);
 
                 }
                 if (type == "a")
                 {
                     MouseOperations.MousePoint mouseBackup = MouseOperations.GetCursorPosition();
-                    x_backup_r = mouseBackup.X;
-                    y_backup_r = mouseBackup.Y;
-
                     RightDownLock = true;
                     string[] result = data.Split(',');
                     int x1 = (Int32.Parse(result[0]) * selfResolution[0] / otherSideResolution[0]);
@@ -648,7 +659,7 @@ namespace Syncromote
 
                     }
                     dispatcherTimer.Tick += dispatcherTimer_Tick;
-                    dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 10);
+                    dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 50);
                     dispatcherTimer.Start();
 
 
